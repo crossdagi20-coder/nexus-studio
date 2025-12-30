@@ -62,13 +62,16 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
-        // Gnexus custom colors
+        // Gnexus custom colors - Enhanced palette
         gnexus: {
           glow: "hsl(var(--gnexus-glow))",
           neon: "hsl(var(--gnexus-neon))",
           surface: "hsl(var(--gnexus-surface))",
           gold: "hsl(var(--gnexus-gold))",
           purple: "hsl(var(--gnexus-purple))",
+          coral: "hsl(var(--gnexus-coral))",
+          success: "hsl(var(--gnexus-success))",
+          warning: "hsl(var(--gnexus-warning))",
         },
       },
       borderRadius: {
