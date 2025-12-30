@@ -11,31 +11,83 @@ import {
   Palette,
   ArrowUpRight,
   Clock,
+  Loader2,
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useDashboardStats, useRecentProjects, useUpcomingTasks } from "@/hooks/useDashboardStats";
+import { Skeleton } from "@/components/ui/skeleton";
+import { format } from "date-fns";
 
-const stats = [
-  { label: "Active Projects", value: "24", change: "+3", icon: FolderKanban, color: "from-blue-500 to-cyan-400" },
-  { label: "Total Clients", value: "156", change: "+12", icon: Users, color: "from-purple-500 to-pink-400" },
-  { label: "Revenue (MTD)", value: "$84.5K", change: "+18%", icon: DollarSign, color: "from-green-500 to-emerald-400" },
-  { label: "Growth", value: "32%", change: "+5%", icon: TrendingUp, color: "from-orange-500 to-yellow-400" },
-];
+const serviceIcons: Record<string, typeof Building2> = {
+  architecture: Building2,
+  web: Globe,
+  social: Share2,
+  design: Palette,
+};
 
-const recentProjects = [
-  { name: "Skyline Tower Visualization", client: "Apex Developers", service: "Architecture", status: "In Progress", icon: Building2 },
-  { name: "TechStart Website Redesign", client: "TechStart Inc", service: "Web Dev", status: "Review", icon: Globe },
-  { name: "Summer Campaign 2025", client: "Fashion Brand Co", service: "Social", status: "Active", icon: Share2 },
-  { name: "Brand Identity Refresh", client: "Green Energy Ltd", service: "Design", status: "Planning", icon: Palette },
-];
+const statusLabels: Record<string, string> = {
+  planning: "Planning",
+  in_progress: "In Progress",
+  review: "Review",
+  completed: "Completed",
+};
 
-const upcomingTasks = [
-  { title: "Client presentation - Skyline Tower", time: "Today, 2:00 PM", priority: "high" },
-  { title: "Review website wireframes", time: "Today, 4:30 PM", priority: "medium" },
-  { title: "Social media content approval", time: "Tomorrow, 10:00 AM", priority: "low" },
-  { title: "Team standup meeting", time: "Tomorrow, 11:00 AM", priority: "medium" },
-];
+const statusColors: Record<string, string> = {
+  planning: "bg-purple-500/20 text-purple-400",
+  in_progress: "bg-blue-500/20 text-blue-400",
+  review: "bg-yellow-500/20 text-yellow-400",
+  completed: "bg-green-500/20 text-green-400",
+};
+
+const priorityColors: Record<string, string> = {
+  low: "bg-green-400",
+  medium: "bg-yellow-400",
+  high: "bg-red-400",
+};
+
+function formatCurrency(amount: number) {
+  if (amount >= 1000) {
+    return `$${(amount / 1000).toFixed(1)}K`;
+  }
+  return `$${amount.toFixed(0)}`;
+}
 
 export default function Dashboard() {
+  const { data: stats, isLoading: statsLoading } = useDashboardStats();
+  const { data: recentProjects, isLoading: projectsLoading } = useRecentProjects();
+  const { data: upcomingTasks, isLoading: tasksLoading } = useUpcomingTasks();
+
+  const statCards = [
+    { 
+      label: "Active Projects", 
+      value: stats?.activeProjects?.toString() || "0", 
+      change: "+3", 
+      icon: FolderKanban, 
+      color: "from-blue-500 to-cyan-400" 
+    },
+    { 
+      label: "Total Clients", 
+      value: stats?.totalClients?.toString() || "0", 
+      change: "+12", 
+      icon: Users, 
+      color: "from-purple-500 to-pink-400" 
+    },
+    { 
+      label: "Revenue (MTD)", 
+      value: formatCurrency(stats?.monthlyRevenue || 0), 
+      change: "+18%", 
+      icon: DollarSign, 
+      color: "from-green-500 to-emerald-400" 
+    },
+    { 
+      label: "Pending Tasks", 
+      value: stats?.pendingTasks?.toString() || "0", 
+      change: "+5%", 
+      icon: TrendingUp, 
+      color: "from-orange-500 to-yellow-400" 
+    },
+  ];
+
   return (
     <DashboardLayout>
       <div className="space-y-8">
@@ -51,7 +103,7 @@ export default function Dashboard() {
 
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {stats.map((stat, index) => (
+          {statCards.map((stat, index) => (
             <motion.div
               key={stat.label}
               initial={{ opacity: 0, y: 20 }}
@@ -65,7 +117,11 @@ export default function Dashboard() {
                 </div>
                 <span className="text-sm font-medium text-green-400">{stat.change}</span>
               </div>
-              <div className="font-serif text-3xl font-bold mb-1">{stat.value}</div>
+              {statsLoading ? (
+                <Skeleton className="h-9 w-20 mb-1" />
+              ) : (
+                <div className="font-serif text-3xl font-bold mb-1">{stat.value}</div>
+              )}
               <div className="text-sm text-muted-foreground">{stat.label}</div>
             </motion.div>
           ))}
@@ -87,29 +143,43 @@ export default function Dashboard() {
               </Link>
             </div>
             <div className="space-y-4">
-              {recentProjects.map((project, index) => (
-                <div
-                  key={project.name}
-                  className="flex items-center gap-4 p-4 rounded-xl bg-secondary/30 hover:bg-secondary/50 transition-colors cursor-pointer"
-                >
-                  <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                    <project.icon className="w-5 h-5 text-primary" />
+              {projectsLoading ? (
+                Array.from({ length: 4 }).map((_, i) => (
+                  <div key={i} className="flex items-center gap-4 p-4 rounded-xl bg-secondary/30">
+                    <Skeleton className="w-10 h-10 rounded-lg" />
+                    <div className="flex-1">
+                      <Skeleton className="h-5 w-48 mb-2" />
+                      <Skeleton className="h-4 w-32" />
+                    </div>
+                    <Skeleton className="h-6 w-20 rounded-full" />
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="font-medium truncate">{project.name}</div>
-                    <div className="text-sm text-muted-foreground">{project.client}</div>
-                  </div>
-                  <div className="hidden sm:block text-sm text-muted-foreground">{project.service}</div>
-                  <div className={`px-3 py-1 rounded-full text-xs font-medium ${
-                    project.status === "In Progress" ? "bg-blue-500/20 text-blue-400" :
-                    project.status === "Review" ? "bg-yellow-500/20 text-yellow-400" :
-                    project.status === "Active" ? "bg-green-500/20 text-green-400" :
-                    "bg-purple-500/20 text-purple-400"
-                  }`}>
-                    {project.status}
-                  </div>
+                ))
+              ) : recentProjects && recentProjects.length > 0 ? (
+                recentProjects.map((project) => {
+                  const ServiceIcon = serviceIcons[project.service_type] || Building2;
+                  return (
+                    <div
+                      key={project.id}
+                      className="flex items-center gap-4 p-4 rounded-xl bg-secondary/30 hover:bg-secondary/50 transition-colors cursor-pointer"
+                    >
+                      <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                        <ServiceIcon className="w-5 h-5 text-primary" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="font-medium truncate">{project.name}</div>
+                        <div className="text-sm text-muted-foreground capitalize">{project.service_type}</div>
+                      </div>
+                      <div className={`px-3 py-1 rounded-full text-xs font-medium ${statusColors[project.status] || "bg-blue-500/20 text-blue-400"}`}>
+                        {statusLabels[project.status] || project.status}
+                      </div>
+                    </div>
+                  );
+                })
+              ) : (
+                <div className="text-center py-8 text-muted-foreground">
+                  No projects yet. Create your first project to get started.
                 </div>
-              ))}
+              )}
             </div>
           </motion.div>
 
@@ -125,24 +195,38 @@ export default function Dashboard() {
               <Clock className="w-5 h-5 text-muted-foreground" />
             </div>
             <div className="space-y-4">
-              {upcomingTasks.map((task, index) => (
-                <div
-                  key={task.title}
-                  className="p-4 rounded-xl bg-secondary/30 hover:bg-secondary/50 transition-colors cursor-pointer"
-                >
-                  <div className="flex items-start gap-3">
-                    <div className={`w-2 h-2 mt-2 rounded-full shrink-0 ${
-                      task.priority === "high" ? "bg-red-400" :
-                      task.priority === "medium" ? "bg-yellow-400" :
-                      "bg-green-400"
-                    }`} />
-                    <div>
-                      <div className="font-medium text-sm">{task.title}</div>
-                      <div className="text-xs text-muted-foreground mt-1">{task.time}</div>
+              {tasksLoading ? (
+                Array.from({ length: 4 }).map((_, i) => (
+                  <div key={i} className="p-4 rounded-xl bg-secondary/30">
+                    <Skeleton className="h-5 w-full mb-2" />
+                    <Skeleton className="h-4 w-24" />
+                  </div>
+                ))
+              ) : upcomingTasks && upcomingTasks.length > 0 ? (
+                upcomingTasks.map((task) => (
+                  <div
+                    key={task.id}
+                    className="p-4 rounded-xl bg-secondary/30 hover:bg-secondary/50 transition-colors cursor-pointer"
+                  >
+                    <div className="flex items-start gap-3">
+                      <div className={`w-2 h-2 mt-2 rounded-full shrink-0 ${priorityColors[task.priority] || "bg-yellow-400"}`} />
+                      <div>
+                        <div className="font-medium text-sm">{task.title}</div>
+                        <div className="text-xs text-muted-foreground mt-1">
+                          {task.due_date 
+                            ? format(new Date(task.due_date), "MMM d, yyyy")
+                            : "No due date"
+                          }
+                        </div>
+                      </div>
                     </div>
                   </div>
+                ))
+              ) : (
+                <div className="text-center py-8 text-muted-foreground text-sm">
+                  No upcoming tasks
                 </div>
-              ))}
+              )}
             </div>
           </motion.div>
         </div>
@@ -155,9 +239,9 @@ export default function Dashboard() {
           className="grid grid-cols-2 md:grid-cols-4 gap-4"
         >
           {[
-            { label: "New Project", icon: FolderKanban, href: "/dashboard/projects/new" },
-            { label: "Add Client", icon: Users, href: "/dashboard/clients/new" },
-            { label: "Create Invoice", icon: DollarSign, href: "/dashboard/billing/new" },
+            { label: "New Project", icon: FolderKanban, href: "/dashboard/projects" },
+            { label: "Add Client", icon: Users, href: "/dashboard/clients" },
+            { label: "Create Invoice", icon: DollarSign, href: "/dashboard/invoices" },
             { label: "View Reports", icon: TrendingUp, href: "/dashboard/analytics" },
           ].map((action) => (
             <Link
