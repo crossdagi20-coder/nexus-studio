@@ -1,4 +1,3 @@
-import { motion } from "framer-motion";
 import { PublicLayout } from "@/components/layout/PublicLayout";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
@@ -9,6 +8,14 @@ import {
   Palette,
   ArrowRight
 } from "lucide-react";
+import { 
+  ScrollReveal, 
+  TextReveal, 
+  ParallaxElement,
+  ScrollProgress,
+  StaggerContainer, 
+  StaggerItem 
+} from "@/components/animations";
 
 const services = [
   {
@@ -44,42 +51,41 @@ const services = [
 export default function Services() {
   return (
     <PublicLayout>
+      <ScrollProgress />
+      
       {/* Hero */}
       <section className="relative min-h-[50vh] flex items-center">
         <div className="absolute inset-0 grid-pattern opacity-30" />
-        <div className="absolute top-20 right-20 w-96 h-96 bg-primary/20 rounded-full blur-[120px]" />
-        <div className="absolute bottom-20 left-20 w-96 h-96 bg-accent/20 rounded-full blur-[120px]" />
+        <ParallaxElement yOffset={[0, 100]} className="absolute top-20 right-20 w-96 h-96">
+          <div className="w-full h-full bg-primary/20 rounded-full blur-[120px]" />
+        </ParallaxElement>
+        <ParallaxElement yOffset={[0, -80]} className="absolute bottom-20 left-20 w-96 h-96">
+          <div className="w-full h-full bg-accent/20 rounded-full blur-[120px]" />
+        </ParallaxElement>
         
         <div className="container mx-auto px-6 relative">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-center max-w-3xl mx-auto"
-          >
-            <h1 className="font-serif text-5xl md:text-7xl font-bold mb-6">
-              Our <span className="text-gradient">Services</span>
-            </h1>
-            <p className="text-xl text-muted-foreground">
-              Comprehensive digital solutions to elevate your brand, 
-              engage your audience, and drive business growth.
-            </p>
-          </motion.div>
+          <div className="text-center max-w-3xl mx-auto">
+            <ScrollReveal variant="blur" delay={0.1}>
+              <h1 className="font-serif text-5xl md:text-7xl font-bold mb-6">
+                Our <span className="text-gradient">Services</span>
+              </h1>
+            </ScrollReveal>
+            <ScrollReveal variant="fadeUp" delay={0.2}>
+              <p className="text-xl text-muted-foreground">
+                Comprehensive digital solutions to elevate your brand, 
+                engage your audience, and drive business growth.
+              </p>
+            </ScrollReveal>
+          </div>
         </div>
       </section>
 
       {/* Services Grid */}
       <section className="py-24">
         <div className="container mx-auto px-6">
-          <div className="grid md:grid-cols-2 gap-8">
-            {services.map((service, index) => (
-              <motion.div
-                key={service.title}
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1, duration: 0.6 }}
-              >
+          <StaggerContainer className="grid md:grid-cols-2 gap-8">
+            {services.map((service) => (
+              <StaggerItem key={service.title} variant="fadeUp">
                 <Link to={service.href} className="block h-full">
                   <div className="glass-card p-8 h-full group hover:border-primary/30 transition-all duration-300 cursor-pointer">
                     <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${service.color} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300`}>
@@ -96,21 +102,16 @@ export default function Services() {
                     </div>
                   </div>
                 </Link>
-              </motion.div>
+              </StaggerItem>
             ))}
-          </div>
+          </StaggerContainer>
         </div>
       </section>
 
       {/* CTA */}
       <section className="py-24 bg-secondary/30">
         <div className="container mx-auto px-6">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center max-w-3xl mx-auto"
-          >
+          <ScrollReveal variant="scaleUp" className="text-center max-w-3xl mx-auto">
             <h2 className="font-serif text-4xl md:text-5xl font-bold mb-6">
               Not Sure Where to Start?
             </h2>
@@ -122,7 +123,7 @@ export default function Services() {
                 Get a Free Consultation <ArrowRight className="w-4 h-4" />
               </Button>
             </Link>
-          </motion.div>
+          </ScrollReveal>
         </div>
       </section>
     </PublicLayout>
