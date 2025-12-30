@@ -17,6 +17,16 @@ export default {
         sans: ['Inter', 'system-ui', 'sans-serif'],
         serif: ['Playfair Display', 'Georgia', 'serif'],
         display: ['Playfair Display', 'Georgia', 'serif'],
+        mono: ['JetBrains Mono', 'monospace'],
+      },
+      letterSpacing: {
+        tightest: '-0.05em',
+        tighter: '-0.025em',
+        tight: '-0.01em',
+        normal: '0',
+        wide: '0.025em',
+        wider: '0.1em',
+        widest: '0.3em',
       },
       colors: {
         border: "hsl(var(--border))",
