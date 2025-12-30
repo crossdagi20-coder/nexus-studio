@@ -53,7 +53,7 @@ const bottomNavItems = [
 export function DashboardSidebar() {
   const location = useLocation();
   const { state } = useSidebar();
-  const { userRole } = useAuth();
+  const { role } = useAuth();
   const collapsed = state === "collapsed";
 
   const isActive = (url: string) => {
@@ -90,7 +90,7 @@ export function DashboardSidebar() {
           {!collapsed && (
             <div>
               <h2 className="text-lg font-serif font-bold gradient-text">Gnexus</h2>
-              <p className="text-xs text-muted-foreground capitalize">{userRole || "Agency"}</p>
+              <p className="text-xs text-muted-foreground capitalize">{role || "Agency"}</p>
             </div>
           )}
         </Link>
