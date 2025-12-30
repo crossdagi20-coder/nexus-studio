@@ -1,38 +1,27 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { 
-  Building2, 
-  Globe, 
-  Share2, 
-  Palette, 
-  Mail, 
-  Phone, 
-  MapPin,
-  Linkedin,
-  Twitter,
-  Instagram,
-  Github
-} from "lucide-react";
+import { ArrowRight, Linkedin, Twitter, Instagram, Github } from "lucide-react";
+import { LiveClock } from "@/components/ui/LiveClock";
 
-const services = [
-  { name: "Architecture & 3D", href: "/services/architecture", icon: Building2 },
-  { name: "Web Development", href: "/services/web", icon: Globe },
-  { name: "Social Media", href: "/services/social", icon: Share2 },
-  { name: "Graphic Design", href: "/services/design", icon: Palette },
-];
-
-const company = [
-  { name: "About Us", href: "/about" },
-  { name: "Portfolio", href: "/portfolio" },
-  { name: "Careers", href: "/careers" },
-  { name: "Blog", href: "/blog" },
-];
-
-const legal = [
-  { name: "Privacy Policy", href: "/privacy" },
-  { name: "Terms of Service", href: "/terms" },
-  { name: "Cookie Policy", href: "/cookies" },
-];
+const footerLinks = {
+  services: [
+    { name: "Architecture & 3D", href: "/services/architecture" },
+    { name: "Web Development", href: "/services/web" },
+    { name: "Social Media", href: "/services/social" },
+    { name: "Graphic Design", href: "/services/design" },
+  ],
+  company: [
+    { name: "About", href: "/about" },
+    { name: "Portfolio", href: "/portfolio" },
+    { name: "Careers", href: "/careers" },
+    { name: "Blog", href: "/blog" },
+  ],
+  legal: [
+    { name: "Privacy", href: "/privacy" },
+    { name: "Terms", href: "/terms" },
+    { name: "Cookies", href: "/cookies" },
+  ],
+};
 
 const socials = [
   { name: "LinkedIn", href: "#", icon: Linkedin },
@@ -43,54 +32,77 @@ const socials = [
 
 export function Footer() {
   return (
-    <footer className="relative border-t border-border/50">
-      {/* Grid background */}
-      <div className="absolute inset-0 grid-pattern opacity-30" />
-      
-      <div className="relative container mx-auto px-6 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12">
-          {/* Brand */}
-          <div className="lg:col-span-2">
-            <Link to="/" className="flex items-center gap-2 mb-6">
-              <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center">
-                <span className="text-xl font-bold text-primary-foreground">G</span>
-              </div>
-              <span className="font-serif text-2xl font-semibold">Gnexus</span>
-            </Link>
-            <p className="text-muted-foreground mb-6 max-w-sm">
-              A next-generation digital agency delivering architectural visualization, 
-              web development, and creative solutions through a unified ecosystem.
-            </p>
-            
-            {/* Contact Info */}
-            <div className="space-y-3">
-              <a href="mailto:hello@gnexus.agency" className="flex items-center gap-3 text-muted-foreground hover:text-foreground transition-colors">
-                <Mail className="w-4 h-4 text-primary" />
-                <span>hello@gnexus.agency</span>
-              </a>
-              <a href="tel:+1234567890" className="flex items-center gap-3 text-muted-foreground hover:text-foreground transition-colors">
-                <Phone className="w-4 h-4 text-primary" />
-                <span>+1 (234) 567-890</span>
-              </a>
-              <div className="flex items-center gap-3 text-muted-foreground">
-                <MapPin className="w-4 h-4 text-primary" />
-                <span>New York, NY 10001</span>
-              </div>
+    <footer className="relative border-t border-border/30">
+      {/* Pre-footer CTA Banner */}
+      <div className="border-b border-border/30">
+        <div className="container mx-auto px-6 py-20">
+          <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8">
+            <div className="max-w-2xl">
+              <motion.h2
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                className="text-3xl md:text-4xl lg:text-5xl font-serif font-light leading-tight mb-4"
+              >
+                We turn bold ideas into
+                <br />
+                <span className="italic">powerful digital realities.</span>
+              </motion.h2>
             </div>
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+            >
+              <Link
+                to="/contact"
+                className="group inline-flex items-center gap-3 text-lg text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <span className="link-underline">Let's work together</span>
+                <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-2" />
+              </Link>
+            </motion.div>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Footer */}
+      <div className="container mx-auto px-6 py-16">
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8 lg:gap-12">
+          {/* Brand Column */}
+          <div className="col-span-2">
+            <Link to="/" className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 rounded-full border border-border/50 flex items-center justify-center">
+                <span className="text-lg font-semibold">G</span>
+              </div>
+              <span className="text-lg font-medium tracking-wide">GNEXUS</span>
+            </Link>
+            <p className="text-muted-foreground text-sm leading-relaxed mb-6 max-w-xs">
+              A next-generation digital agency delivering architectural visualization, 
+              web development, and creative solutions.
+            </p>
+            <a 
+              href="mailto:hello@gnexus.agency" 
+              className="text-sm text-muted-foreground hover:text-foreground transition-colors link-underline"
+            >
+              hello@gnexus.agency
+            </a>
           </div>
 
           {/* Services */}
           <div>
-            <h4 className="font-serif text-lg font-semibold mb-4">Services</h4>
-            <ul className="space-y-3">
-              {services.map((item) => (
+            <h4 className="text-xs uppercase tracking-widest text-muted-foreground mb-6">
+              Services
+            </h4>
+            <ul className="space-y-4">
+              {footerLinks.services.map((item) => (
                 <li key={item.name}>
                   <Link 
                     to={item.href}
-                    className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+                    className="text-sm text-foreground/70 hover:text-foreground transition-colors"
                   >
-                    <item.icon className="w-4 h-4 text-primary/70" />
-                    <span>{item.name}</span>
+                    {item.name}
                   </Link>
                 </li>
               ))}
@@ -99,13 +111,15 @@ export function Footer() {
 
           {/* Company */}
           <div>
-            <h4 className="font-serif text-lg font-semibold mb-4">Company</h4>
-            <ul className="space-y-3">
-              {company.map((item) => (
+            <h4 className="text-xs uppercase tracking-widest text-muted-foreground mb-6">
+              Company
+            </h4>
+            <ul className="space-y-4">
+              {footerLinks.company.map((item) => (
                 <li key={item.name}>
                   <Link 
                     to={item.href}
-                    className="text-muted-foreground hover:text-foreground transition-colors link-underline"
+                    className="text-sm text-foreground/70 hover:text-foreground transition-colors"
                   >
                     {item.name}
                   </Link>
@@ -116,13 +130,15 @@ export function Footer() {
 
           {/* Legal */}
           <div>
-            <h4 className="font-serif text-lg font-semibold mb-4">Legal</h4>
-            <ul className="space-y-3">
-              {legal.map((item) => (
+            <h4 className="text-xs uppercase tracking-widest text-muted-foreground mb-6">
+              Legal
+            </h4>
+            <ul className="space-y-4">
+              {footerLinks.legal.map((item) => (
                 <li key={item.name}>
                   <Link 
                     to={item.href}
-                    className="text-muted-foreground hover:text-foreground transition-colors link-underline"
+                    className="text-sm text-foreground/70 hover:text-foreground transition-colors"
                   >
                     {item.name}
                   </Link>
@@ -130,28 +146,35 @@ export function Footer() {
               ))}
             </ul>
           </div>
+
+          {/* Social */}
+          <div>
+            <h4 className="text-xs uppercase tracking-widest text-muted-foreground mb-6">
+              Connect
+            </h4>
+            <div className="flex flex-wrap gap-3">
+              {socials.map((social) => (
+                <motion.a
+                  key={social.name}
+                  href={social.href}
+                  whileHover={{ y: -3 }}
+                  className="w-10 h-10 rounded-full border border-border/50 flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-colors"
+                  aria-label={social.name}
+                >
+                  <social.icon className="w-4 h-4" />
+                </motion.a>
+              ))}
+            </div>
+          </div>
         </div>
 
         {/* Bottom Bar */}
-        <div className="mt-16 pt-8 border-t border-border/50 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-sm text-muted-foreground">
+        <div className="mt-16 pt-8 border-t border-border/30 flex flex-col md:flex-row items-center justify-between gap-4">
+          <p className="text-xs text-muted-foreground">
             © {new Date().getFullYear()} Gnexus. All rights reserved.
           </p>
           
-          {/* Social Links */}
-          <div className="flex items-center gap-4">
-            {socials.map((social) => (
-              <motion.a
-                key={social.name}
-                href={social.href}
-                whileHover={{ y: -3 }}
-                className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-primary/20 transition-colors"
-                aria-label={social.name}
-              >
-                <social.icon className="w-5 h-5" />
-              </motion.a>
-            ))}
-          </div>
+          <LiveClock />
         </div>
       </div>
     </footer>
