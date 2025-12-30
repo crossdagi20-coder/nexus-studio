@@ -12,6 +12,7 @@ import {
   Laptop,
   ArrowRight
 } from "lucide-react";
+import { ScrollReveal, ParallaxElement, StaggerContainer, StaggerItem, ScrollProgress } from "@/components/animations";
 
 const benefits = [
   { icon: Heart, title: "Health Insurance", description: "Comprehensive medical, dental, and vision coverage" },
@@ -56,18 +57,15 @@ const openings = [
 export default function Careers() {
   return (
     <PublicLayout>
+      <ScrollProgress />
+      
       {/* Hero */}
-      <section className="relative min-h-[60vh] flex items-center">
+      <section className="relative min-h-[60vh] flex items-center overflow-hidden">
         <div className="absolute inset-0 grid-pattern opacity-30" />
-        <div className="absolute bottom-20 right-20 w-96 h-96 bg-accent/20 rounded-full blur-[120px]" />
+        <ParallaxElement yOffset={[0, 100]} className="absolute bottom-20 right-20 w-96 h-96 bg-accent/20 rounded-full blur-[120px] pointer-events-none" />
         
         <div className="container mx-auto px-6 relative">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="max-w-3xl"
-          >
+          <ScrollReveal variant="fadeUp" className="max-w-3xl">
             <h1 className="font-serif text-5xl md:text-7xl font-bold mb-6">
               Join the <span className="text-gradient">Gnexus</span> Team
             </h1>
@@ -78,108 +76,91 @@ export default function Careers() {
             <Button size="lg" className="pillowy gap-2" onClick={() => document.getElementById('openings')?.scrollIntoView({ behavior: 'smooth' })}>
               View Open Positions <ArrowRight className="w-4 h-4" />
             </Button>
-          </motion.div>
+          </ScrollReveal>
         </div>
       </section>
 
       {/* Benefits */}
-      <section className="py-24 bg-secondary/30">
-        <div className="container mx-auto px-6">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-16"
-          >
+      <section className="py-24 bg-secondary/30 relative overflow-hidden">
+        <ParallaxElement yOffset={[-30, 30]} className="absolute top-0 left-0 w-80 h-80 bg-primary/5 rounded-full blur-[100px] pointer-events-none" />
+        
+        <div className="container mx-auto px-6 relative">
+          <ScrollReveal variant="fadeUp" className="text-center mb-16">
             <h2 className="font-serif text-4xl md:text-5xl font-bold mb-4">
               Why Work With Us
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
               We believe in taking care of our team so they can do their best work.
             </p>
-          </motion.div>
+          </ScrollReveal>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {benefits.map((benefit, index) => (
-              <motion.div
-                key={benefit.title}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                className="glass-card p-6"
-              >
-                <benefit.icon className="w-10 h-10 text-primary mb-4" />
-                <h3 className="font-semibold text-lg mb-2">{benefit.title}</h3>
-                <p className="text-muted-foreground">{benefit.description}</p>
-              </motion.div>
+          <StaggerContainer className="grid md:grid-cols-2 lg:grid-cols-3 gap-6" staggerDelay={0.08}>
+            {benefits.map((benefit) => (
+              <StaggerItem key={benefit.title} variant="fadeUp">
+                <motion.div
+                  whileHover={{ y: -5 }}
+                  className="glass-card p-6 h-full"
+                >
+                  <benefit.icon className="w-10 h-10 text-primary mb-4" />
+                  <h3 className="font-semibold text-lg mb-2">{benefit.title}</h3>
+                  <p className="text-muted-foreground">{benefit.description}</p>
+                </motion.div>
+              </StaggerItem>
             ))}
-          </div>
+          </StaggerContainer>
         </div>
       </section>
 
       {/* Open Positions */}
       <section id="openings" className="py-24">
         <div className="container mx-auto px-6">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-16"
-          >
+          <ScrollReveal variant="fadeUp" className="text-center mb-16">
             <h2 className="font-serif text-4xl md:text-5xl font-bold mb-4">
               Open Positions
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
               Find your next role and join our growing team.
             </p>
-          </motion.div>
+          </ScrollReveal>
 
-          <div className="max-w-3xl mx-auto space-y-4">
-            {openings.map((job, index) => (
-              <motion.div
-                key={job.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                className="glass-card p-6 group hover:border-primary/30 transition-all cursor-pointer"
-              >
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                  <div>
-                    <h3 className="font-semibold text-xl group-hover:text-primary transition-colors">{job.title}</h3>
-                    <p className="text-muted-foreground mb-3">{job.description}</p>
-                    <div className="flex flex-wrap gap-3 text-sm">
-                      <span className="flex items-center gap-1 text-muted-foreground">
-                        <Briefcase className="w-4 h-4" /> {job.department}
-                      </span>
-                      <span className="flex items-center gap-1 text-muted-foreground">
-                        <MapPin className="w-4 h-4" /> {job.location}
-                      </span>
-                      <span className="flex items-center gap-1 text-muted-foreground">
-                        <Clock className="w-4 h-4" /> {job.type}
-                      </span>
+          <StaggerContainer className="max-w-3xl mx-auto space-y-4" staggerDelay={0.1}>
+            {openings.map((job) => (
+              <StaggerItem key={job.title} variant="slideRight">
+                <motion.div
+                  whileHover={{ x: 5, borderColor: "hsl(var(--primary) / 0.3)" }}
+                  className="glass-card p-6 group cursor-pointer transition-all"
+                >
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                      <h3 className="font-semibold text-xl group-hover:text-primary transition-colors">{job.title}</h3>
+                      <p className="text-muted-foreground mb-3">{job.description}</p>
+                      <div className="flex flex-wrap gap-3 text-sm">
+                        <span className="flex items-center gap-1 text-muted-foreground">
+                          <Briefcase className="w-4 h-4" /> {job.department}
+                        </span>
+                        <span className="flex items-center gap-1 text-muted-foreground">
+                          <MapPin className="w-4 h-4" /> {job.location}
+                        </span>
+                        <span className="flex items-center gap-1 text-muted-foreground">
+                          <Clock className="w-4 h-4" /> {job.type}
+                        </span>
+                      </div>
                     </div>
+                    <Button className="pillowy shrink-0">
+                      Apply Now
+                    </Button>
                   </div>
-                  <Button className="pillowy shrink-0">
-                    Apply Now
-                  </Button>
-                </div>
-              </motion.div>
+                </motion.div>
+              </StaggerItem>
             ))}
-          </div>
+          </StaggerContainer>
         </div>
       </section>
 
       {/* CTA */}
       <section className="py-24 bg-secondary/30">
         <div className="container mx-auto px-6">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center max-w-3xl mx-auto"
-          >
+          <ScrollReveal variant="scaleUp" className="text-center max-w-3xl mx-auto">
             <h2 className="font-serif text-4xl md:text-5xl font-bold mb-6">
               Don't See Your Role?
             </h2>
@@ -190,7 +171,7 @@ export default function Careers() {
             <Button size="lg" variant="outline" className="pillowy-ghost gap-2">
               Send Your Resume <ArrowRight className="w-4 h-4" />
             </Button>
-          </motion.div>
+          </ScrollReveal>
         </div>
       </section>
     </PublicLayout>

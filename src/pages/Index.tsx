@@ -1,4 +1,5 @@
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { useRef } from "react";
 import { Link } from "react-router-dom";
 import { PublicLayout } from "@/components/layout";
 import { Button } from "@/components/ui/button";
@@ -6,6 +7,7 @@ import { Building2, Globe, Share2, Palette, ArrowRight, CheckCircle2 } from "luc
 import { ParticleSphere } from "@/components/ui/ParticleSphere";
 import { CounterStats } from "@/components/ui/CounterStats";
 import { ServiceCard } from "@/components/ui/ServiceCard";
+import { ScrollReveal, ParallaxElement, StaggerContainer, StaggerItem, TextReveal, ScrollProgress } from "@/components/animations";
 
 const services = [
   { 
@@ -59,10 +61,23 @@ const stats = [
 ];
 
 export default function Index() {
+  const heroRef = useRef<HTMLElement>(null);
+  const { scrollYProgress: heroScrollProgress } = useScroll({
+    target: heroRef,
+    offset: ["start start", "end start"]
+  });
+  
+  const heroTextY = useTransform(heroScrollProgress, [0, 1], [0, 100]);
+  const heroOpacity = useTransform(heroScrollProgress, [0, 0.5], [1, 0]);
+  const sphereY = useTransform(heroScrollProgress, [0, 1], [0, 150]);
+  const sphereScale = useTransform(heroScrollProgress, [0, 1], [1, 0.8]);
+
   return (
     <PublicLayout>
+      <ScrollProgress />
+      
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center overflow-hidden">
+      <section ref={heroRef} className="relative min-h-screen flex items-center overflow-hidden">
         {/* Light ray effect from top-left */}
         <div 
           className="absolute inset-0 opacity-40"
@@ -76,11 +91,14 @@ export default function Index() {
         
         <div className="container mx-auto px-6 relative z-10">
           <div className="grid lg:grid-cols-2 gap-16 items-center min-h-[80vh]">
-            {/* Left: Content */}
-            <div className="pt-20 lg:pt-0">
+            {/* Left: Content with parallax */}
+            <motion.div 
+              className="pt-20 lg:pt-0"
+              style={{ y: heroTextY, opacity: heroOpacity }}
+            >
               <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
+                initial={{ opacity: 0, y: 30, filter: "blur(10px)" }}
+                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
                 transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
               >
                 <span className="inline-block text-xs uppercase tracking-[0.3em] text-muted-foreground mb-8">
@@ -89,8 +107,8 @@ export default function Index() {
               </motion.div>
 
               <motion.h1
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
+                initial={{ opacity: 0, y: 30, filter: "blur(10px)" }}
+                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
                 transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
                 className="text-5xl md:text-6xl lg:text-7xl font-light leading-[1.1] mb-8 tracking-tight"
               >
@@ -101,8 +119,8 @@ export default function Index() {
               </motion.h1>
 
               <motion.p
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
+                initial={{ opacity: 0, y: 30, filter: "blur(10px)" }}
+                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
                 transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
                 className="text-lg text-muted-foreground max-w-md mb-12 leading-relaxed"
               >
@@ -111,8 +129,8 @@ export default function Index() {
               </motion.p>
 
               <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
+                initial={{ opacity: 0, y: 30, filter: "blur(10px)" }}
+                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
                 transition={{ duration: 0.8, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
                 className="flex flex-col sm:flex-row gap-4"
               >
@@ -135,12 +153,15 @@ export default function Index() {
                   </Button>
                 </Link>
               </motion.div>
-            </div>
+            </motion.div>
 
-            {/* Right: Particle Sphere */}
-            <div className="hidden lg:block h-[500px] xl:h-[600px]">
+            {/* Right: Particle Sphere with parallax */}
+            <motion.div 
+              className="hidden lg:block h-[500px] xl:h-[600px]"
+              style={{ y: sphereY, scale: sphereScale }}
+            >
               <ParticleSphere />
-            </div>
+            </motion.div>
           </div>
         </div>
       </section>
@@ -154,49 +175,43 @@ export default function Index() {
 
       {/* Services Section */}
       <section className="py-32 relative">
+        <ParallaxElement yOffset={[50, -50]} className="absolute top-20 right-0 w-96 h-96 bg-primary/5 rounded-full blur-[120px] pointer-events-none" />
+        
         <div className="container mx-auto px-6">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="mb-16"
-          >
+          <ScrollReveal variant="fadeUp" className="mb-16">
             <span className="text-xs uppercase tracking-[0.3em] text-muted-foreground mb-4 block">
               What We Do
             </span>
             <h2 className="text-4xl md:text-5xl font-light tracking-tight">
               Our <span className="font-serif italic">Services</span>
             </h2>
-          </motion.div>
+          </ScrollReveal>
 
-          <div className="grid md:grid-cols-2 gap-6">
+          <StaggerContainer className="grid md:grid-cols-2 gap-6" staggerDelay={0.1}>
             {services.map((service) => (
-              <ServiceCard
-                key={service.number}
-                number={service.number}
-                title={service.title}
-                description={service.description}
-                services={service.services}
-                href={service.href}
-                icon={service.icon}
-              />
+              <StaggerItem key={service.number}>
+                <ServiceCard
+                  number={service.number}
+                  title={service.title}
+                  description={service.description}
+                  services={service.services}
+                  href={service.href}
+                  icon={service.icon}
+                />
+              </StaggerItem>
             ))}
-          </div>
+          </StaggerContainer>
         </div>
       </section>
 
       {/* Features Section */}
       <section className="py-32 relative bg-card/50">
         <div className="absolute inset-0 grid-pattern opacity-10" />
+        <ParallaxElement yOffset={[-30, 30]} className="absolute bottom-20 left-0 w-72 h-72 bg-accent/5 rounded-full blur-[100px] pointer-events-none" />
+        
         <div className="container mx-auto px-6 relative z-10">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
-            <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-            >
+            <ScrollReveal variant="slideLeft">
               <span className="text-xs uppercase tracking-[0.3em] text-muted-foreground mb-4 block">
                 Platform
               </span>
@@ -209,55 +224,42 @@ export default function Index() {
                 The Gnexus ecosystem brings together 50+ features into a single, unified dashboard. 
                 Manage projects, clients, content, and finances — all from one place.
               </p>
-              <div className="grid grid-cols-2 gap-4">
-                {features.map((feature, index) => (
-                  <motion.div
-                    key={feature}
-                    initial={{ opacity: 0, y: 10 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.4, delay: index * 0.05 }}
-                    className="flex items-center gap-3"
-                  >
-                    <CheckCircle2 className="w-4 h-4 text-primary shrink-0" />
-                    <span className="text-sm text-foreground/80">{feature}</span>
-                  </motion.div>
-                ))}
-              </div>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="relative"
-            >
-              <div className="rounded-2xl border border-border/50 bg-card/80 backdrop-blur-sm p-8">
-                <div className="aspect-video rounded-xl bg-gradient-to-br from-primary/5 to-accent/5 flex items-center justify-center border border-border/30">
-                  <div className="text-center">
-                    <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-primary/10 flex items-center justify-center">
-                      <Building2 className="w-8 h-8 text-primary" />
+              <StaggerContainer className="grid grid-cols-2 gap-4" staggerDelay={0.05}>
+                {features.map((feature) => (
+                  <StaggerItem key={feature}>
+                    <div className="flex items-center gap-3">
+                      <CheckCircle2 className="w-4 h-4 text-primary shrink-0" />
+                      <span className="text-sm text-foreground/80">{feature}</span>
                     </div>
-                    <p className="text-sm text-muted-foreground">Dashboard Preview</p>
+                  </StaggerItem>
+                ))}
+              </StaggerContainer>
+            </ScrollReveal>
+
+            <ScrollReveal variant="slideRight" delay={0.2}>
+              <ParallaxElement yOffset={[-20, 20]}>
+                <div className="rounded-2xl border border-border/50 bg-card/80 backdrop-blur-sm p-8">
+                  <div className="aspect-video rounded-xl bg-gradient-to-br from-primary/5 to-accent/5 flex items-center justify-center border border-border/30">
+                    <div className="text-center">
+                      <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-primary/10 flex items-center justify-center">
+                        <Building2 className="w-8 h-8 text-primary" />
+                      </div>
+                      <p className="text-sm text-muted-foreground">Dashboard Preview</p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </motion.div>
+              </ParallaxElement>
+            </ScrollReveal>
           </div>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="py-32 relative">
+      <section className="py-32 relative overflow-hidden">
+        <ParallaxElement yOffset={[100, -100]} className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-gradient-radial from-primary/5 to-transparent rounded-full pointer-events-none" />
+        
         <div className="container mx-auto px-6">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="text-center max-w-3xl mx-auto"
-          >
+          <ScrollReveal variant="scaleUp" className="text-center max-w-3xl mx-auto">
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-light tracking-tight mb-6">
               Ready to <span className="font-serif italic">Transform</span>
               <br />
@@ -275,7 +277,7 @@ export default function Index() {
                 <ArrowRight className="ml-2 w-5 h-5 transition-transform group-hover:translate-x-1" />
               </Button>
             </Link>
-          </motion.div>
+          </ScrollReveal>
         </div>
       </section>
     </PublicLayout>
