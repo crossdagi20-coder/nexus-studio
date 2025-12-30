@@ -3,7 +3,7 @@ import {
   LayoutDashboard, FolderKanban, Users, Calendar, Clock,
   FileText, Receipt, TrendingUp, BarChart3, Settings, 
   HelpCircle, Image, Share2, MessageSquare, UserCog,
-  Briefcase, ChevronRight
+  Briefcase, ChevronRight, PanelLeft
 } from "lucide-react";
 import {
   Sidebar,
@@ -43,6 +43,7 @@ const creativeItems = [
 const adminItems = [
   { title: "Analytics", url: "/dashboard/analytics", icon: BarChart3 },
   { title: "Team", url: "/dashboard/team", icon: UserCog },
+  { title: "CMS", url: "/dashboard/cms", icon: PanelLeft },
 ];
 
 const bottomNavItems = [

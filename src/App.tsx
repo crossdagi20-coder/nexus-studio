@@ -26,6 +26,15 @@ import SocialHub from "./pages/dashboard/SocialHub";
 import Tickets from "./pages/dashboard/Tickets";
 import ClientPortal from "./pages/portal/ClientPortal";
 
+// CMS Pages
+import CMSOverview from "./pages/dashboard/cms/index";
+import PortfolioManagement from "./pages/dashboard/cms/PortfolioManagement";
+import TeamManagement from "./pages/dashboard/cms/TeamManagement";
+import ServicesManagement from "./pages/dashboard/cms/ServicesManagement";
+import CareersManagement from "./pages/dashboard/cms/CareersManagement";
+import BlogManagement from "./pages/dashboard/cms/BlogManagement";
+import PageContent from "./pages/dashboard/cms/PageContent";
+
 // Service Pages
 import Services from "./pages/services/Services";
 import Architecture from "./pages/services/Architecture";
@@ -94,6 +103,15 @@ const App = () => (
             <Route path="/dashboard/social" element={<SocialHub />} />
             <Route path="/dashboard/tickets" element={<Tickets />} />
             <Route path="/dashboard/settings" element={<Settings />} />
+            
+            {/* CMS Routes */}
+            <Route path="/dashboard/cms" element={<CMSOverview />} />
+            <Route path="/dashboard/cms/portfolio" element={<PortfolioManagement />} />
+            <Route path="/dashboard/cms/team" element={<TeamManagement />} />
+            <Route path="/dashboard/cms/services" element={<ServicesManagement />} />
+            <Route path="/dashboard/cms/careers" element={<CareersManagement />} />
+            <Route path="/dashboard/cms/blog" element={<BlogManagement />} />
+            <Route path="/dashboard/cms/pages" element={<PageContent />} />
             
             {/* Client Portal */}
             <Route path="/portal" element={<ClientPortal />} />
