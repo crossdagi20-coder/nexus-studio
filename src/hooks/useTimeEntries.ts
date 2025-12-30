@@ -49,7 +49,7 @@ export function useStartTimer() {
   const { user } = useAuth();
 
   return useMutation({
-    mutationFn: async (entry: Omit<TimeEntryInsert, "user_id">) => {
+    mutationFn: async (entry: Omit<TimeEntryInsert, "user_id" | "start_time">) => {
       if (!user) throw new Error("User not authenticated");
 
       const { data, error } = await supabase

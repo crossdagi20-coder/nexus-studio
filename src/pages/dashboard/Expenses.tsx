@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { 
   Plus, Search, Filter, MoreHorizontal, Upload, Receipt,
   DollarSign, TrendingDown, CheckCircle, Clock, X,
-  CreditCard, Building2, Car, Coffee, Plane, Package
+  CreditCard, Building2, Car, Coffee, Plane, Package, Loader2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -30,71 +30,10 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-
-interface Expense {
-  id: string;
-  category: string;
-  description: string;
-  vendor: string;
-  amount: number;
-  date: string;
-  status: "pending" | "approved" | "rejected" | "reimbursed";
-  project?: string;
-  receiptUrl?: string;
-}
-
-const mockExpenses: Expense[] = [
-  {
-    id: "1",
-    category: "Software",
-    description: "Adobe Creative Cloud Annual",
-    vendor: "Adobe Inc.",
-    amount: 599.88,
-    date: "2025-01-02",
-    status: "approved",
-    project: "General",
-  },
-  {
-    id: "2",
-    category: "Travel",
-    description: "Flight to client meeting",
-    vendor: "Delta Airlines",
-    amount: 425.00,
-    date: "2024-12-28",
-    status: "reimbursed",
-    project: "TechCorp Website",
-    receiptUrl: "/receipts/flight.pdf",
-  },
-  {
-    id: "3",
-    category: "Office",
-    description: "Office supplies and equipment",
-    vendor: "Staples",
-    amount: 187.50,
-    date: "2025-01-01",
-    status: "pending",
-  },
-  {
-    id: "4",
-    category: "Meals",
-    description: "Team lunch meeting",
-    vendor: "Local Restaurant",
-    amount: 156.80,
-    date: "2024-12-30",
-    status: "pending",
-    project: "Design Studio Pro",
-  },
-  {
-    id: "5",
-    category: "Transport",
-    description: "Uber to client office",
-    vendor: "Uber",
-    amount: 32.50,
-    date: "2024-12-29",
-    status: "approved",
-    project: "StartUp Nexus",
-  },
-];
+import { useExpenses, useCreateExpense } from "@/hooks/useExpenses";
+import { useProjects } from "@/hooks/useProjects";
+import { useExpensesRealtime } from "@/hooks/useRealtimeSubscription";
+import { toast } from "sonner";
 
 const categoryIcons: Record<string, any> = {
   Software: CreditCard,
@@ -117,22 +56,78 @@ export default function Expenses() {
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [categoryFilter, setCategoryFilter] = useState<string>("all");
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    category: "",
+    amount: "",
+    description: "",
+    vendor: "",
+    expense_date: new Date().toISOString().split('T')[0],
+    project_id: "",
+    notes: "",
+  });
 
-  const filteredExpenses = mockExpenses.filter((expense) => {
+  // Real-time subscription
+  useExpensesRealtime();
+
+  // Data hooks
+  const { data: expenses = [], isLoading } = useExpenses();
+  const { data: projects = [] } = useProjects();
+  const createExpense = useCreateExpense();
+
+  const filteredExpenses = expenses.filter((expense) => {
     const matchesSearch = 
-      expense.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      expense.vendor.toLowerCase().includes(searchQuery.toLowerCase());
+      (expense.description?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false) ||
+      (expense.vendor?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false);
     const matchesStatus = statusFilter === "all" || expense.status === statusFilter;
     const matchesCategory = categoryFilter === "all" || expense.category === categoryFilter;
     return matchesSearch && matchesStatus && matchesCategory;
   });
 
   const stats = {
-    total: mockExpenses.reduce((acc, e) => acc + e.amount, 0),
-    pending: mockExpenses.filter(e => e.status === "pending").reduce((acc, e) => acc + e.amount, 0),
-    approved: mockExpenses.filter(e => e.status === "approved").reduce((acc, e) => acc + e.amount, 0),
-    reimbursed: mockExpenses.filter(e => e.status === "reimbursed").reduce((acc, e) => acc + e.amount, 0),
+    total: expenses.reduce((acc, e) => acc + e.amount, 0),
+    pending: expenses.filter(e => e.status === "pending").reduce((acc, e) => acc + e.amount, 0),
+    approved: expenses.filter(e => e.status === "approved").reduce((acc, e) => acc + e.amount, 0),
+    reimbursed: expenses.filter(e => e.status === "reimbursed").reduce((acc, e) => acc + e.amount, 0),
   };
+
+  const handleSubmit = async () => {
+    if (!formData.category || !formData.amount) {
+      toast.error("Category and amount are required");
+      return;
+    }
+
+    try {
+      await createExpense.mutateAsync({
+        category: formData.category,
+        amount: parseFloat(formData.amount),
+        description: formData.description || null,
+        vendor: formData.vendor || null,
+        expense_date: formData.expense_date,
+        project_id: formData.project_id || null,
+      });
+      toast.success("Expense added");
+      setIsAddDialogOpen(false);
+      setFormData({
+        category: "",
+        amount: "",
+        description: "",
+        vendor: "",
+        expense_date: new Date().toISOString().split('T')[0],
+        project_id: "",
+        notes: "",
+      });
+    } catch (error) {
+      toast.error("Failed to add expense");
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -148,7 +143,7 @@ export default function Expenses() {
         </div>
         <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
           <DialogTrigger asChild>
-            <Button className="gap-2">
+            <Button variant="pillowy" className="gap-2">
               <Plus className="h-4 w-4" />
               Add Expense
             </Button>
@@ -160,54 +155,72 @@ export default function Expenses() {
             <div className="space-y-4 mt-4">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label>Category</Label>
-                  <Select>
+                  <Label>Category *</Label>
+                  <Select value={formData.category} onValueChange={(v) => setFormData(prev => ({ ...prev, category: v }))}>
                     <SelectTrigger>
                       <SelectValue placeholder="Select category" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="software">Software</SelectItem>
-                      <SelectItem value="travel">Travel</SelectItem>
-                      <SelectItem value="office">Office</SelectItem>
-                      <SelectItem value="meals">Meals</SelectItem>
-                      <SelectItem value="transport">Transport</SelectItem>
-                      <SelectItem value="other">Other</SelectItem>
+                      <SelectItem value="Software">Software</SelectItem>
+                      <SelectItem value="Travel">Travel</SelectItem>
+                      <SelectItem value="Office">Office</SelectItem>
+                      <SelectItem value="Meals">Meals</SelectItem>
+                      <SelectItem value="Transport">Transport</SelectItem>
+                      <SelectItem value="Other">Other</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
                 <div className="space-y-2">
-                  <Label>Amount</Label>
+                  <Label>Amount *</Label>
                   <div className="relative">
                     <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input type="number" placeholder="0.00" className="pl-9" step="0.01" />
+                    <Input 
+                      type="number" 
+                      placeholder="0.00" 
+                      className="pl-9" 
+                      step="0.01"
+                      value={formData.amount}
+                      onChange={(e) => setFormData(prev => ({ ...prev, amount: e.target.value }))}
+                    />
                   </div>
                 </div>
               </div>
               <div className="space-y-2">
                 <Label>Description</Label>
-                <Input placeholder="What was this expense for?" />
+                <Input 
+                  placeholder="What was this expense for?"
+                  value={formData.description}
+                  onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+                />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Vendor</Label>
-                  <Input placeholder="Vendor name" />
+                  <Input 
+                    placeholder="Vendor name"
+                    value={formData.vendor}
+                    onChange={(e) => setFormData(prev => ({ ...prev, vendor: e.target.value }))}
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label>Date</Label>
-                  <Input type="date" defaultValue={new Date().toISOString().split('T')[0]} />
+                  <Input 
+                    type="date" 
+                    value={formData.expense_date}
+                    onChange={(e) => setFormData(prev => ({ ...prev, expense_date: e.target.value }))}
+                  />
                 </div>
               </div>
               <div className="space-y-2">
                 <Label>Project (Optional)</Label>
-                <Select>
+                <Select value={formData.project_id} onValueChange={(v) => setFormData(prev => ({ ...prev, project_id: v }))}>
                   <SelectTrigger>
                     <SelectValue placeholder="Link to project" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="general">General</SelectItem>
-                    <SelectItem value="techcorp">TechCorp Website</SelectItem>
-                    <SelectItem value="mobile">Mobile App</SelectItem>
-                    <SelectItem value="startup">StartUp Nexus</SelectItem>
+                    {projects.map((project) => (
+                      <SelectItem key={project.id} value={project.id}>{project.name}</SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
@@ -223,13 +236,11 @@ export default function Expenses() {
                   </p>
                 </div>
               </div>
-              <div className="space-y-2">
-                <Label>Notes (Optional)</Label>
-                <Textarea placeholder="Additional notes..." rows={2} />
-              </div>
               <div className="flex justify-end gap-3 pt-4">
-                <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>Cancel</Button>
-                <Button onClick={() => setIsAddDialogOpen(false)}>Add Expense</Button>
+                <Button variant="pillowy-secondary" onClick={() => setIsAddDialogOpen(false)}>Cancel</Button>
+                <Button variant="pillowy" onClick={handleSubmit} disabled={createExpense.isPending}>
+                  {createExpense.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : "Add Expense"}
+                </Button>
               </div>
             </div>
           </DialogContent>
@@ -332,91 +343,106 @@ export default function Expenses() {
         </Select>
       </motion.div>
 
+      {/* Empty State */}
+      {filteredExpenses.length === 0 && (
+        <div className="glass-card p-8 text-center">
+          <Receipt className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+          <h3 className="font-semibold mb-2">No expenses found</h3>
+          <p className="text-muted-foreground mb-4">Add your first expense to get started</p>
+          <Button variant="pillowy" onClick={() => setIsAddDialogOpen(true)}>
+            <Plus className="h-4 w-4 mr-2" />
+            Add Expense
+          </Button>
+        </div>
+      )}
+
       {/* Expenses List */}
-      <motion.div 
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.3 }}
-        className="space-y-3"
-      >
-        {filteredExpenses.map((expense, index) => {
-          const CategoryIcon = categoryIcons[expense.category] || Package;
-          return (
-            <motion.div
-              key={expense.id}
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.05 * index }}
-              className="glass-card p-4 flex items-center gap-4 hover:border-primary/20 transition-all"
-            >
-              <div className="p-3 rounded-xl bg-secondary/50">
-                <CategoryIcon className="h-5 w-5 text-primary" />
-              </div>
-
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 mb-1">
-                  <h4 className="font-medium truncate">{expense.description}</h4>
-                  {expense.receiptUrl && (
-                    <Receipt className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-                  )}
-                </div>
-                <div className="flex items-center gap-3 text-sm text-muted-foreground">
-                  <span>{expense.vendor}</span>
-                  <span>•</span>
-                  <span>{expense.category}</span>
-                  {expense.project && (
-                    <>
-                      <span>•</span>
-                      <span>{expense.project}</span>
-                    </>
-                  )}
-                </div>
-              </div>
-
-              <div className="flex items-center gap-4">
-                <div className="text-right">
-                  <p className="font-semibold">${expense.amount.toFixed(2)}</p>
-                  <p className="text-xs text-muted-foreground">
-                    {new Date(expense.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-                  </p>
+      {filteredExpenses.length > 0 && (
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.3 }}
+          className="space-y-3"
+        >
+          {filteredExpenses.map((expense, index) => {
+            const CategoryIcon = categoryIcons[expense.category] || Package;
+            return (
+              <motion.div
+                key={expense.id}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.05 * index }}
+                className="glass-card p-4 flex items-center gap-4 hover:border-primary/20 transition-all"
+              >
+                <div className="p-3 rounded-xl bg-secondary/50">
+                  <CategoryIcon className="h-5 w-5 text-primary" />
                 </div>
 
-                <Badge variant="outline" className={statusColors[expense.status]}>
-                  {expense.status}
-                </Badge>
-
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon">
-                      <MoreHorizontal className="h-4 w-4" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuItem>View Details</DropdownMenuItem>
-                    <DropdownMenuItem>Edit Expense</DropdownMenuItem>
-                    {expense.receiptUrl && (
-                      <DropdownMenuItem>View Receipt</DropdownMenuItem>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-1">
+                    <h4 className="font-medium truncate">{expense.description || expense.category}</h4>
+                    {expense.receipt_url && (
+                      <Receipt className="h-4 w-4 text-muted-foreground flex-shrink-0" />
                     )}
-                    {expense.status === "pending" && (
+                  </div>
+                  <div className="flex items-center gap-3 text-sm text-muted-foreground">
+                    <span>{expense.vendor || "No vendor"}</span>
+                    <span>•</span>
+                    <span>{expense.category}</span>
+                    {(expense as any).projects?.name && (
                       <>
-                        <DropdownMenuItem className="text-gnexus-success gap-2">
-                          <CheckCircle className="h-4 w-4" />
-                          Approve
-                        </DropdownMenuItem>
-                        <DropdownMenuItem className="text-destructive gap-2">
-                          <X className="h-4 w-4" />
-                          Reject
-                        </DropdownMenuItem>
+                        <span>•</span>
+                        <span>{(expense as any).projects.name}</span>
                       </>
                     )}
-                    <DropdownMenuItem className="text-destructive">Delete</DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
-            </motion.div>
-          );
-        })}
-      </motion.div>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-4">
+                  <div className="text-right">
+                    <p className="font-semibold">${expense.amount.toFixed(2)}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {new Date(expense.expense_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                    </p>
+                  </div>
+
+                  <Badge variant="outline" className={statusColors[expense.status]}>
+                    {expense.status}
+                  </Badge>
+
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="icon">
+                        <MoreHorizontal className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem>View Details</DropdownMenuItem>
+                      <DropdownMenuItem>Edit Expense</DropdownMenuItem>
+                      {expense.receipt_url && (
+                        <DropdownMenuItem>View Receipt</DropdownMenuItem>
+                      )}
+                      {expense.status === "pending" && (
+                        <>
+                          <DropdownMenuItem className="text-gnexus-success gap-2">
+                            <CheckCircle className="h-4 w-4" />
+                            Approve
+                          </DropdownMenuItem>
+                          <DropdownMenuItem className="text-destructive gap-2">
+                            <X className="h-4 w-4" />
+                            Reject
+                          </DropdownMenuItem>
+                        </>
+                      )}
+                      <DropdownMenuItem className="text-destructive">Delete</DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+              </motion.div>
+            );
+          })}
+        </motion.div>
+      )}
     </div>
   );
 }

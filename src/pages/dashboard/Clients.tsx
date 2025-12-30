@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { 
   Plus, Search, Filter, MoreHorizontal, Mail, Phone, 
   Building2, Globe, Star, Users, TrendingUp, ChevronDown,
-  Grid3X3, List, UserPlus
+  Grid3X3, List, UserPlus, Loader2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -30,75 +30,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
-// Mock data
-const mockClients = [
-  {
-    id: "1",
-    company_name: "TechCorp Industries",
-    contact_name: "Sarah Johnson",
-    email: "sarah@techcorp.com",
-    phone: "+1 555-0123",
-    industry: "Technology",
-    status: "active",
-    lead_score: 85,
-    website: "techcorp.com",
-    projects: 3,
-    revenue: 45000,
-  },
-  {
-    id: "2",
-    company_name: "Design Studio Pro",
-    contact_name: "Michael Chen",
-    email: "michael@designstudio.io",
-    phone: "+1 555-0456",
-    industry: "Creative",
-    status: "active",
-    lead_score: 92,
-    website: "designstudio.io",
-    projects: 5,
-    revenue: 78000,
-  },
-  {
-    id: "3",
-    company_name: "Global Ventures",
-    contact_name: "Emma Williams",
-    email: "emma@globalventures.com",
-    phone: "+1 555-0789",
-    industry: "Finance",
-    status: "prospect",
-    lead_score: 68,
-    website: "globalventures.com",
-    projects: 0,
-    revenue: 0,
-  },
-  {
-    id: "4",
-    company_name: "Urban Architecture",
-    contact_name: "David Park",
-    email: "david@urbanarch.co",
-    phone: "+1 555-0321",
-    industry: "Architecture",
-    status: "lead",
-    lead_score: 45,
-    website: "urbanarch.co",
-    projects: 0,
-    revenue: 0,
-  },
-  {
-    id: "5",
-    company_name: "StartUp Nexus",
-    contact_name: "Lisa Thompson",
-    email: "lisa@startupnexus.io",
-    phone: "+1 555-0654",
-    industry: "Technology",
-    status: "active",
-    lead_score: 78,
-    website: "startupnexus.io",
-    projects: 2,
-    revenue: 32000,
-  },
-];
+import { useClients, useCreateClient } from "@/hooks/useClients";
+import { useClientsRealtime } from "@/hooks/useRealtimeSubscription";
+import { toast } from "sonner";
 
 const statusColors: Record<string, string> = {
   lead: "bg-muted text-muted-foreground",
@@ -119,21 +53,82 @@ export default function Clients() {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  
+  // Form state
+  const [formData, setFormData] = useState({
+    company_name: "",
+    contact_name: "",
+    email: "",
+    phone: "",
+    industry: "",
+    status: "lead" as const,
+    website: "",
+    notes: "",
+  });
 
-  const filteredClients = mockClients.filter((client) => {
+  // Real-time subscription
+  useClientsRealtime();
+
+  // Data hooks
+  const { data: clients = [], isLoading } = useClients();
+  const createClient = useCreateClient();
+
+  const filteredClients = clients.filter((client) => {
     const matchesSearch = 
       client.company_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      client.contact_name.toLowerCase().includes(searchQuery.toLowerCase());
+      (client.contact_name?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false);
     const matchesStatus = statusFilter === "all" || client.status === statusFilter;
     return matchesSearch && matchesStatus;
   });
 
   const stats = {
-    total: mockClients.length,
-    active: mockClients.filter(c => c.status === "active").length,
-    prospects: mockClients.filter(c => c.status === "prospect").length,
-    leads: mockClients.filter(c => c.status === "lead").length,
+    total: clients.length,
+    active: clients.filter(c => c.status === "active").length,
+    prospects: clients.filter(c => c.status === "prospect").length,
+    leads: clients.filter(c => c.status === "lead").length,
   };
+
+  const handleSubmit = async () => {
+    if (!formData.company_name) {
+      toast.error("Company name is required");
+      return;
+    }
+
+    try {
+      await createClient.mutateAsync({
+        company_name: formData.company_name,
+        contact_name: formData.contact_name || null,
+        email: formData.email || null,
+        phone: formData.phone || null,
+        industry: formData.industry || null,
+        status: formData.status,
+        website: formData.website || null,
+        notes: formData.notes || null,
+      });
+      toast.success("Client added successfully");
+      setIsAddDialogOpen(false);
+      setFormData({
+        company_name: "",
+        contact_name: "",
+        email: "",
+        phone: "",
+        industry: "",
+        status: "lead",
+        website: "",
+        notes: "",
+      });
+    } catch (error) {
+      toast.error("Failed to add client");
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -149,7 +144,7 @@ export default function Clients() {
         </div>
         <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
           <DialogTrigger asChild>
-            <Button className="gap-2">
+            <Button variant="pillowy" className="gap-2">
               <UserPlus className="h-4 w-4" />
               Add Client
             </Button>
@@ -161,28 +156,45 @@ export default function Clients() {
             <div className="space-y-4 mt-4">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label>Company Name</Label>
-                  <Input placeholder="Enter company name" />
+                  <Label>Company Name *</Label>
+                  <Input 
+                    placeholder="Enter company name" 
+                    value={formData.company_name}
+                    onChange={(e) => setFormData(prev => ({ ...prev, company_name: e.target.value }))}
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label>Contact Name</Label>
-                  <Input placeholder="Enter contact name" />
+                  <Input 
+                    placeholder="Enter contact name" 
+                    value={formData.contact_name}
+                    onChange={(e) => setFormData(prev => ({ ...prev, contact_name: e.target.value }))}
+                  />
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Email</Label>
-                  <Input type="email" placeholder="email@company.com" />
+                  <Input 
+                    type="email" 
+                    placeholder="email@company.com" 
+                    value={formData.email}
+                    onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label>Phone</Label>
-                  <Input placeholder="+1 555-0000" />
+                  <Input 
+                    placeholder="+1 555-0000" 
+                    value={formData.phone}
+                    onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
+                  />
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Industry</Label>
-                  <Select>
+                  <Select value={formData.industry} onValueChange={(v) => setFormData(prev => ({ ...prev, industry: v }))}>
                     <SelectTrigger>
                       <SelectValue placeholder="Select industry" />
                     </SelectTrigger>
@@ -197,7 +209,7 @@ export default function Clients() {
                 </div>
                 <div className="space-y-2">
                   <Label>Status</Label>
-                  <Select defaultValue="lead">
+                  <Select value={formData.status} onValueChange={(v: any) => setFormData(prev => ({ ...prev, status: v }))}>
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
@@ -211,15 +223,26 @@ export default function Clients() {
               </div>
               <div className="space-y-2">
                 <Label>Website</Label>
-                <Input placeholder="www.company.com" />
+                <Input 
+                  placeholder="www.company.com" 
+                  value={formData.website}
+                  onChange={(e) => setFormData(prev => ({ ...prev, website: e.target.value }))}
+                />
               </div>
               <div className="space-y-2">
                 <Label>Notes</Label>
-                <Textarea placeholder="Additional notes about this client..." rows={3} />
+                <Textarea 
+                  placeholder="Additional notes about this client..." 
+                  rows={3}
+                  value={formData.notes}
+                  onChange={(e) => setFormData(prev => ({ ...prev, notes: e.target.value }))}
+                />
               </div>
               <div className="flex justify-end gap-3 pt-4">
-                <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>Cancel</Button>
-                <Button onClick={() => setIsAddDialogOpen(false)}>Add Client</Button>
+                <Button variant="pillowy-secondary" onClick={() => setIsAddDialogOpen(false)}>Cancel</Button>
+                <Button variant="pillowy" onClick={handleSubmit} disabled={createClient.isPending}>
+                  {createClient.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : "Add Client"}
+                </Button>
               </div>
             </div>
           </DialogContent>
@@ -312,14 +335,14 @@ export default function Clients() {
         </div>
         <div className="flex items-center gap-2">
           <Button
-            variant={viewMode === "grid" ? "secondary" : "ghost"}
+            variant={viewMode === "grid" ? "pillowy-secondary" : "pillowy-ghost"}
             size="icon"
             onClick={() => setViewMode("grid")}
           >
             <Grid3X3 className="h-4 w-4" />
           </Button>
           <Button
-            variant={viewMode === "list" ? "secondary" : "ghost"}
+            variant={viewMode === "list" ? "pillowy-secondary" : "pillowy-ghost"}
             size="icon"
             onClick={() => setViewMode("list")}
           >
@@ -327,6 +350,19 @@ export default function Clients() {
           </Button>
         </div>
       </motion.div>
+
+      {/* Empty State */}
+      {filteredClients.length === 0 && (
+        <div className="glass-card p-8 text-center">
+          <Users className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+          <h3 className="font-semibold mb-2">No clients found</h3>
+          <p className="text-muted-foreground mb-4">Add your first client to get started</p>
+          <Button variant="pillowy" onClick={() => setIsAddDialogOpen(true)}>
+            <UserPlus className="h-4 w-4 mr-2" />
+            Add Client
+          </Button>
+        </div>
+      )}
 
       {/* Client Grid/List */}
       {viewMode === "grid" ? (
@@ -351,7 +387,7 @@ export default function Clients() {
                   </div>
                   <div>
                     <h3 className="font-semibold">{client.company_name}</h3>
-                    <p className="text-sm text-muted-foreground">{client.contact_name}</p>
+                    <p className="text-sm text-muted-foreground">{client.contact_name || "No contact"}</p>
                   </div>
                 </div>
                 <DropdownMenu>
@@ -370,18 +406,24 @@ export default function Clients() {
               </div>
 
               <div className="space-y-3">
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Mail className="h-4 w-4" />
-                  <span className="truncate">{client.email}</span>
-                </div>
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Phone className="h-4 w-4" />
-                  <span>{client.phone}</span>
-                </div>
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Globe className="h-4 w-4" />
-                  <span>{client.website}</span>
-                </div>
+                {client.email && (
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <Mail className="h-4 w-4" />
+                    <span className="truncate">{client.email}</span>
+                  </div>
+                )}
+                {client.phone && (
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <Phone className="h-4 w-4" />
+                    <span>{client.phone}</span>
+                  </div>
+                )}
+                {client.website && (
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <Globe className="h-4 w-4" />
+                    <span>{client.website}</span>
+                  </div>
+                )}
               </div>
 
               <div className="flex items-center justify-between mt-4 pt-4 border-t border-border/50">
@@ -390,18 +432,11 @@ export default function Clients() {
                 </Badge>
                 <div className="flex items-center gap-2">
                   <span className="text-sm text-muted-foreground">Score:</span>
-                  <span className={`font-semibold ${getLeadScoreColor(client.lead_score)}`}>
-                    {client.lead_score}%
+                  <span className={`font-semibold ${getLeadScoreColor(client.lead_score || 0)}`}>
+                    {client.lead_score || 0}%
                   </span>
                 </div>
               </div>
-
-              {client.projects > 0 && (
-                <div className="mt-4 pt-4 border-t border-border/50 flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">{client.projects} Projects</span>
-                  <span className="font-medium text-gnexus-success">${client.revenue.toLocaleString()}</span>
-                </div>
-              )}
             </motion.div>
           ))}
         </motion.div>
@@ -420,8 +455,6 @@ export default function Clients() {
                 <th>Industry</th>
                 <th>Status</th>
                 <th>Lead Score</th>
-                <th>Projects</th>
-                <th>Revenue</th>
                 <th></th>
               </tr>
             </thead>
@@ -431,24 +464,20 @@ export default function Clients() {
                   <td className="font-medium">{client.company_name}</td>
                   <td>
                     <div>
-                      <p>{client.contact_name}</p>
-                      <p className="text-sm text-muted-foreground">{client.email}</p>
+                      <p>{client.contact_name || "-"}</p>
+                      <p className="text-sm text-muted-foreground">{client.email || "-"}</p>
                     </div>
                   </td>
-                  <td>{client.industry}</td>
+                  <td>{client.industry || "-"}</td>
                   <td>
                     <Badge variant="outline" className={statusColors[client.status]}>
                       {client.status}
                     </Badge>
                   </td>
                   <td>
-                    <span className={`font-semibold ${getLeadScoreColor(client.lead_score)}`}>
-                      {client.lead_score}%
+                    <span className={`font-semibold ${getLeadScoreColor(client.lead_score || 0)}`}>
+                      {client.lead_score || 0}%
                     </span>
-                  </td>
-                  <td>{client.projects}</td>
-                  <td className="font-medium text-gnexus-success">
-                    ${client.revenue.toLocaleString()}
                   </td>
                   <td>
                     <DropdownMenu>
