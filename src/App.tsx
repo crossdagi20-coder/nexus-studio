@@ -26,6 +26,25 @@ import SocialHub from "./pages/dashboard/SocialHub";
 import Tickets from "./pages/dashboard/Tickets";
 import ClientPortal from "./pages/portal/ClientPortal";
 
+// Service Pages
+import Services from "./pages/services/Services";
+import Architecture from "./pages/services/Architecture";
+import WebDevelopment from "./pages/services/WebDevelopment";
+import SocialMedia from "./pages/services/SocialMedia";
+import GraphicDesign from "./pages/services/GraphicDesign";
+
+// Company Pages
+import About from "./pages/company/About";
+import Portfolio from "./pages/company/Portfolio";
+import Careers from "./pages/company/Careers";
+import Blog from "./pages/company/Blog";
+import Contact from "./pages/company/Contact";
+
+// Legal Pages
+import Privacy from "./pages/legal/Privacy";
+import Terms from "./pages/legal/Terms";
+import Cookies from "./pages/legal/Cookies";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -39,6 +58,25 @@ const App = () => (
             {/* Public Routes */}
             <Route path="/" element={<Index />} />
             <Route path="/auth" element={<Auth />} />
+            
+            {/* Service Pages */}
+            <Route path="/services" element={<Services />} />
+            <Route path="/services/architecture" element={<Architecture />} />
+            <Route path="/services/web" element={<WebDevelopment />} />
+            <Route path="/services/social" element={<SocialMedia />} />
+            <Route path="/services/design" element={<GraphicDesign />} />
+            
+            {/* Company Pages */}
+            <Route path="/about" element={<About />} />
+            <Route path="/portfolio" element={<Portfolio />} />
+            <Route path="/careers" element={<Careers />} />
+            <Route path="/blog" element={<Blog />} />
+            <Route path="/contact" element={<Contact />} />
+            
+            {/* Legal Pages */}
+            <Route path="/privacy" element={<Privacy />} />
+            <Route path="/terms" element={<Terms />} />
+            <Route path="/cookies" element={<Cookies />} />
             
             {/* Dashboard Routes */}
             <Route path="/dashboard" element={<Dashboard />} />
