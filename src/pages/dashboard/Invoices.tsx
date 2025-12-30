@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { 
   Plus, Search, Filter, MoreHorizontal, Download, Send,
   DollarSign, Clock, CheckCircle, AlertCircle, FileText,
-  Eye, Printer, Copy
+  Eye, Printer, Copy, Loader2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -31,82 +31,11 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-
-interface Invoice {
-  id: string;
-  invoiceNumber: string;
-  clientName: string;
-  projectName: string;
-  status: "draft" | "sent" | "viewed" | "paid" | "overdue";
-  issueDate: string;
-  dueDate: string;
-  subtotal: number;
-  tax: number;
-  total: number;
-}
-
-const mockInvoices: Invoice[] = [
-  {
-    id: "1",
-    invoiceNumber: "INV-2025-001",
-    clientName: "TechCorp Industries",
-    projectName: "Website Redesign",
-    status: "paid",
-    issueDate: "2024-12-15",
-    dueDate: "2025-01-15",
-    subtotal: 8500,
-    tax: 680,
-    total: 9180,
-  },
-  {
-    id: "2",
-    invoiceNumber: "INV-2025-002",
-    clientName: "Design Studio Pro",
-    projectName: "Brand Identity Package",
-    status: "sent",
-    issueDate: "2024-12-28",
-    dueDate: "2025-01-28",
-    subtotal: 4200,
-    tax: 336,
-    total: 4536,
-  },
-  {
-    id: "3",
-    invoiceNumber: "INV-2025-003",
-    clientName: "StartUp Nexus",
-    projectName: "Mobile App Development",
-    status: "overdue",
-    issueDate: "2024-12-01",
-    dueDate: "2024-12-31",
-    subtotal: 15000,
-    tax: 1200,
-    total: 16200,
-  },
-  {
-    id: "4",
-    invoiceNumber: "INV-2025-004",
-    clientName: "Global Ventures",
-    projectName: "Marketing Campaign",
-    status: "draft",
-    issueDate: "2025-01-02",
-    dueDate: "2025-02-02",
-    subtotal: 3500,
-    tax: 280,
-    total: 3780,
-  },
-  {
-    id: "5",
-    invoiceNumber: "INV-2025-005",
-    clientName: "Urban Architecture",
-    projectName: "3D Visualization",
-    status: "viewed",
-    issueDate: "2024-12-20",
-    dueDate: "2025-01-20",
-    subtotal: 6000,
-    tax: 480,
-    total: 6480,
-  },
-];
+import { useInvoices, useCreateInvoice } from "@/hooks/useInvoices";
+import { useClients } from "@/hooks/useClients";
+import { useProjects } from "@/hooks/useProjects";
+import { useInvoicesRealtime } from "@/hooks/useRealtimeSubscription";
+import { toast } from "sonner";
 
 const statusConfig: Record<string, { color: string; icon: any; label: string }> = {
   draft: { color: "bg-muted text-muted-foreground", icon: FileText, label: "Draft" },
@@ -114,27 +43,76 @@ const statusConfig: Record<string, { color: string; icon: any; label: string }> 
   viewed: { color: "bg-gnexus-warning/15 text-gnexus-warning border-gnexus-warning/25", icon: Eye, label: "Viewed" },
   paid: { color: "bg-gnexus-success/15 text-gnexus-success border-gnexus-success/25", icon: CheckCircle, label: "Paid" },
   overdue: { color: "bg-destructive/15 text-destructive border-destructive/25", icon: AlertCircle, label: "Overdue" },
+  cancelled: { color: "bg-muted text-muted-foreground", icon: AlertCircle, label: "Cancelled" },
 };
 
 export default function Invoices() {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    client_id: "",
+    project_id: "",
+    due_date: "",
+    notes: "",
+  });
 
-  const filteredInvoices = mockInvoices.filter((invoice) => {
+  // Real-time subscription
+  useInvoicesRealtime();
+
+  // Data hooks
+  const { data: invoices = [], isLoading } = useInvoices();
+  const { data: clients = [] } = useClients();
+  const { data: projects = [] } = useProjects();
+  const createInvoice = useCreateInvoice();
+
+  const filteredInvoices = invoices.filter((invoice) => {
     const matchesSearch = 
-      invoice.invoiceNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      invoice.clientName.toLowerCase().includes(searchQuery.toLowerCase());
+      invoice.invoice_number.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesStatus = statusFilter === "all" || invoice.status === statusFilter;
     return matchesSearch && matchesStatus;
   });
 
   const stats = {
-    total: mockInvoices.reduce((acc, inv) => acc + inv.total, 0),
-    paid: mockInvoices.filter(inv => inv.status === "paid").reduce((acc, inv) => acc + inv.total, 0),
-    pending: mockInvoices.filter(inv => inv.status === "sent" || inv.status === "viewed").reduce((acc, inv) => acc + inv.total, 0),
-    overdue: mockInvoices.filter(inv => inv.status === "overdue").reduce((acc, inv) => acc + inv.total, 0),
+    total: invoices.reduce((acc, inv) => acc + inv.total, 0),
+    paid: invoices.filter(inv => inv.status === "paid").reduce((acc, inv) => acc + inv.total, 0),
+    pending: invoices.filter(inv => inv.status === "sent" || inv.status === "viewed").reduce((acc, inv) => acc + inv.total, 0),
+    overdue: invoices.filter(inv => inv.status === "overdue").reduce((acc, inv) => acc + inv.total, 0),
   };
+
+  const handleSubmit = async () => {
+    if (!formData.due_date) {
+      toast.error("Due date is required");
+      return;
+    }
+
+    try {
+      const invoiceNumber = `INV-${Date.now().toString(36).toUpperCase()}`;
+      await createInvoice.mutateAsync({
+        invoice_number: invoiceNumber,
+        client_id: formData.client_id || null,
+        project_id: formData.project_id || null,
+        due_date: formData.due_date,
+        notes: formData.notes || null,
+        status: "draft",
+        subtotal: 0,
+        total: 0,
+      });
+      toast.success("Invoice created");
+      setIsCreateDialogOpen(false);
+      setFormData({ client_id: "", project_id: "", due_date: "", notes: "" });
+    } catch (error) {
+      toast.error("Failed to create invoice");
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -150,7 +128,7 @@ export default function Invoices() {
         </div>
         <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
           <DialogTrigger asChild>
-            <Button className="gap-2">
+            <Button variant="pillowy" className="gap-2">
               <Plus className="h-4 w-4" />
               Create Invoice
             </Button>
@@ -163,27 +141,27 @@ export default function Invoices() {
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Client</Label>
-                  <Select>
+                  <Select value={formData.client_id} onValueChange={(v) => setFormData(prev => ({ ...prev, client_id: v }))}>
                     <SelectTrigger>
                       <SelectValue placeholder="Select client" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="techcorp">TechCorp Industries</SelectItem>
-                      <SelectItem value="design">Design Studio Pro</SelectItem>
-                      <SelectItem value="startup">StartUp Nexus</SelectItem>
+                      {clients.map((client) => (
+                        <SelectItem key={client.id} value={client.id}>{client.company_name}</SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>
                 <div className="space-y-2">
                   <Label>Project</Label>
-                  <Select>
+                  <Select value={formData.project_id} onValueChange={(v) => setFormData(prev => ({ ...prev, project_id: v }))}>
                     <SelectTrigger>
                       <SelectValue placeholder="Select project" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="website">Website Redesign</SelectItem>
-                      <SelectItem value="mobile">Mobile App</SelectItem>
-                      <SelectItem value="brand">Brand Identity</SelectItem>
+                      {projects.map((project) => (
+                        <SelectItem key={project.id} value={project.id}>{project.name}</SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>
@@ -191,38 +169,33 @@ export default function Invoices() {
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Issue Date</Label>
-                  <Input type="date" defaultValue={new Date().toISOString().split('T')[0]} />
+                  <Input type="date" defaultValue={new Date().toISOString().split('T')[0]} disabled />
                 </div>
                 <div className="space-y-2">
-                  <Label>Due Date</Label>
-                  <Input type="date" />
-                </div>
-              </div>
-              
-              <div className="space-y-2">
-                <Label>Line Items</Label>
-                <div className="space-y-2">
-                  <div className="flex gap-2">
-                    <Input placeholder="Description" className="flex-1" />
-                    <Input placeholder="Qty" className="w-20" type="number" defaultValue="1" />
-                    <Input placeholder="Rate" className="w-28" type="number" />
-                  </div>
-                  <Button variant="outline" size="sm" className="gap-2">
-                    <Plus className="h-4 w-4" />
-                    Add Line Item
-                  </Button>
+                  <Label>Due Date *</Label>
+                  <Input 
+                    type="date" 
+                    value={formData.due_date}
+                    onChange={(e) => setFormData(prev => ({ ...prev, due_date: e.target.value }))}
+                  />
                 </div>
               </div>
 
               <div className="space-y-2">
                 <Label>Notes</Label>
-                <Textarea placeholder="Additional notes for the client..." rows={2} />
+                <Textarea 
+                  placeholder="Additional notes for the client..." 
+                  rows={2}
+                  value={formData.notes}
+                  onChange={(e) => setFormData(prev => ({ ...prev, notes: e.target.value }))}
+                />
               </div>
 
               <div className="flex justify-end gap-3 pt-4 border-t border-border">
-                <Button variant="outline" onClick={() => setIsCreateDialogOpen(false)}>Cancel</Button>
-                <Button variant="outline">Save as Draft</Button>
-                <Button onClick={() => setIsCreateDialogOpen(false)}>Create & Send</Button>
+                <Button variant="pillowy-secondary" onClick={() => setIsCreateDialogOpen(false)}>Cancel</Button>
+                <Button variant="pillowy" onClick={handleSubmit} disabled={createInvoice.isPending}>
+                  {createInvoice.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : "Create Invoice"}
+                </Button>
               </div>
             </div>
           </DialogContent>
@@ -314,103 +287,116 @@ export default function Invoices() {
         </Select>
       </motion.div>
 
+      {/* Empty State */}
+      {filteredInvoices.length === 0 && (
+        <div className="glass-card p-8 text-center">
+          <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+          <h3 className="font-semibold mb-2">No invoices found</h3>
+          <p className="text-muted-foreground mb-4">Create your first invoice to get started</p>
+          <Button variant="pillowy" onClick={() => setIsCreateDialogOpen(true)}>
+            <Plus className="h-4 w-4 mr-2" />
+            Create Invoice
+          </Button>
+        </div>
+      )}
+
       {/* Invoices Table */}
-      <motion.div 
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.3 }}
-        className="glass-card overflow-hidden"
-      >
-        <table className="data-table">
-          <thead>
-            <tr>
-              <th>Invoice</th>
-              <th>Client</th>
-              <th>Project</th>
-              <th>Status</th>
-              <th>Issue Date</th>
-              <th>Due Date</th>
-              <th className="text-right">Amount</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredInvoices.map((invoice, index) => {
-              const StatusIcon = statusConfig[invoice.status].icon;
-              return (
-                <motion.tr 
-                  key={invoice.id}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.05 * index }}
-                  className="hover:bg-secondary/30"
-                >
-                  <td>
-                    <span className="font-mono font-medium">{invoice.invoiceNumber}</span>
-                  </td>
-                  <td>{invoice.clientName}</td>
-                  <td className="text-muted-foreground">{invoice.projectName}</td>
-                  <td>
-                    <Badge variant="outline" className={`gap-1 ${statusConfig[invoice.status].color}`}>
-                      <StatusIcon className="h-3 w-3" />
-                      {statusConfig[invoice.status].label}
-                    </Badge>
-                  </td>
-                  <td className="text-muted-foreground">
-                    {new Date(invoice.issueDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-                  </td>
-                  <td className={invoice.status === 'overdue' ? 'text-destructive font-medium' : 'text-muted-foreground'}>
-                    {new Date(invoice.dueDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-                  </td>
-                  <td className="text-right font-semibold">${invoice.total.toLocaleString()}</td>
-                  <td>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon">
-                          <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem className="gap-2">
-                          <Eye className="h-4 w-4" />
-                          View Invoice
-                        </DropdownMenuItem>
-                        <DropdownMenuItem className="gap-2">
-                          <Download className="h-4 w-4" />
-                          Download PDF
-                        </DropdownMenuItem>
-                        <DropdownMenuItem className="gap-2">
-                          <Printer className="h-4 w-4" />
-                          Print
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        {invoice.status === 'draft' && (
+      {filteredInvoices.length > 0 && (
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.3 }}
+          className="glass-card overflow-hidden"
+        >
+          <table className="data-table">
+            <thead>
+              <tr>
+                <th>Invoice</th>
+                <th>Client</th>
+                <th>Status</th>
+                <th>Issue Date</th>
+                <th>Due Date</th>
+                <th className="text-right">Amount</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredInvoices.map((invoice, index) => {
+                const StatusIcon = statusConfig[invoice.status]?.icon || FileText;
+                return (
+                  <motion.tr 
+                    key={invoice.id}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.05 * index }}
+                    className="hover:bg-secondary/30"
+                  >
+                    <td>
+                      <span className="font-mono font-medium">{invoice.invoice_number}</span>
+                    </td>
+                    <td>{(invoice as any).clients?.company_name || "-"}</td>
+                    <td>
+                      <Badge variant="outline" className={`gap-1 ${statusConfig[invoice.status]?.color || ""}`}>
+                        <StatusIcon className="h-3 w-3" />
+                        {statusConfig[invoice.status]?.label || invoice.status}
+                      </Badge>
+                    </td>
+                    <td className="text-muted-foreground">
+                      {new Date(invoice.issue_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                    </td>
+                    <td className={invoice.status === 'overdue' ? 'text-destructive font-medium' : 'text-muted-foreground'}>
+                      {new Date(invoice.due_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                    </td>
+                    <td className="text-right font-semibold">${invoice.total.toLocaleString()}</td>
+                    <td>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="icon">
+                            <MoreHorizontal className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
                           <DropdownMenuItem className="gap-2">
-                            <Send className="h-4 w-4" />
-                            Send to Client
+                            <Eye className="h-4 w-4" />
+                            View Invoice
                           </DropdownMenuItem>
-                        )}
-                        {invoice.status !== 'paid' && (
-                          <DropdownMenuItem className="gap-2 text-gnexus-success">
-                            <CheckCircle className="h-4 w-4" />
-                            Mark as Paid
+                          <DropdownMenuItem className="gap-2">
+                            <Download className="h-4 w-4" />
+                            Download PDF
                           </DropdownMenuItem>
-                        )}
-                        <DropdownMenuItem className="gap-2">
-                          <Copy className="h-4 w-4" />
-                          Duplicate
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem className="text-destructive">Delete Invoice</DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </td>
-                </motion.tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </motion.div>
+                          <DropdownMenuItem className="gap-2">
+                            <Printer className="h-4 w-4" />
+                            Print
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          {invoice.status === 'draft' && (
+                            <DropdownMenuItem className="gap-2">
+                              <Send className="h-4 w-4" />
+                              Send to Client
+                            </DropdownMenuItem>
+                          )}
+                          {invoice.status !== 'paid' && (
+                            <DropdownMenuItem className="gap-2 text-gnexus-success">
+                              <CheckCircle className="h-4 w-4" />
+                              Mark as Paid
+                            </DropdownMenuItem>
+                          )}
+                          <DropdownMenuItem className="gap-2">
+                            <Copy className="h-4 w-4" />
+                            Duplicate
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem className="text-destructive">Delete Invoice</DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </td>
+                  </motion.tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </motion.div>
+      )}
     </div>
   );
 }

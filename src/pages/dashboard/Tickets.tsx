@@ -2,7 +2,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { 
   Plus, Search, Filter, MoreHorizontal, MessageSquare,
-  AlertCircle, Clock, CheckCircle, User, Flag
+  AlertCircle, Clock, CheckCircle, User, Flag, Loader2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -30,27 +30,10 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-
-interface Ticket {
-  id: string;
-  ticketNumber: string;
-  subject: string;
-  description: string;
-  status: "open" | "in_progress" | "waiting" | "resolved" | "closed";
-  priority: "low" | "medium" | "high" | "urgent";
-  client: string;
-  assignee?: string;
-  createdAt: string;
-  lastUpdate: string;
-}
-
-const mockTickets: Ticket[] = [
-  { id: "1", ticketNumber: "TKT-001", subject: "Website not loading on mobile", description: "Users reporting issues with mobile view", status: "open", priority: "high", client: "TechCorp", createdAt: "2025-01-02T10:00:00", lastUpdate: "2025-01-02T10:00:00" },
-  { id: "2", ticketNumber: "TKT-002", subject: "Logo update request", description: "Need to update the header logo", status: "in_progress", priority: "medium", client: "Design Studio", assignee: "JD", createdAt: "2025-01-01T14:00:00", lastUpdate: "2025-01-02T09:00:00" },
-  { id: "3", ticketNumber: "TKT-003", subject: "Invoice clarification needed", description: "Question about line items on last invoice", status: "waiting", priority: "low", client: "StartUp Nexus", assignee: "SC", createdAt: "2024-12-30T11:00:00", lastUpdate: "2025-01-01T15:00:00" },
-  { id: "4", ticketNumber: "TKT-004", subject: "Urgent: Server downtime", description: "Production server is not responding", status: "resolved", priority: "urgent", client: "Global Ventures", assignee: "MR", createdAt: "2024-12-29T08:00:00", lastUpdate: "2024-12-29T12:00:00" },
-  { id: "5", ticketNumber: "TKT-005", subject: "Feature request: Dark mode", description: "Client requesting dark mode option", status: "open", priority: "low", client: "Urban Architecture", createdAt: "2024-12-28T16:00:00", lastUpdate: "2024-12-28T16:00:00" },
-];
+import { useTickets, useCreateTicket } from "@/hooks/useTickets";
+import { useClients } from "@/hooks/useClients";
+import { useTicketsRealtime } from "@/hooks/useRealtimeSubscription";
+import { toast } from "sonner";
 
 const statusConfig: Record<string, { color: string; icon: any; label: string }> = {
   open: { color: "bg-primary/15 text-primary border-primary/25", icon: AlertCircle, label: "Open" },
@@ -71,20 +54,64 @@ export default function Tickets() {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    subject: "",
+    description: "",
+    client_id: "",
+    priority: "medium" as const,
+  });
 
-  const filteredTickets = mockTickets.filter(ticket => {
+  // Real-time subscription
+  useTicketsRealtime();
+
+  // Data hooks
+  const { data: tickets = [], isLoading } = useTickets();
+  const { data: clients = [] } = useClients();
+  const createTicket = useCreateTicket();
+
+  const filteredTickets = tickets.filter(ticket => {
     const matchesSearch = ticket.subject.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      ticket.ticketNumber.toLowerCase().includes(searchQuery.toLowerCase());
+      ticket.ticket_number.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesStatus = statusFilter === "all" || ticket.status === statusFilter;
     return matchesSearch && matchesStatus;
   });
 
   const stats = {
-    total: mockTickets.length,
-    open: mockTickets.filter(t => t.status === "open").length,
-    inProgress: mockTickets.filter(t => t.status === "in_progress").length,
-    resolved: mockTickets.filter(t => t.status === "resolved" || t.status === "closed").length,
+    total: tickets.length,
+    open: tickets.filter(t => t.status === "open").length,
+    inProgress: tickets.filter(t => t.status === "in_progress").length,
+    resolved: tickets.filter(t => t.status === "resolved" || t.status === "closed").length,
   };
+
+  const handleSubmit = async () => {
+    if (!formData.subject) {
+      toast.error("Subject is required");
+      return;
+    }
+
+    try {
+      await createTicket.mutateAsync({
+        subject: formData.subject,
+        description: formData.description || null,
+        client_id: formData.client_id || null,
+        priority: formData.priority,
+        status: "open",
+      });
+      toast.success("Ticket created");
+      setIsCreateDialogOpen(false);
+      setFormData({ subject: "", description: "", client_id: "", priority: "medium" });
+    } catch (error) {
+      toast.error("Failed to create ticket");
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -99,7 +126,7 @@ export default function Tickets() {
         </div>
         <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
           <DialogTrigger asChild>
-            <Button className="gap-2">
+            <Button variant="pillowy" className="gap-2">
               <Plus className="h-4 w-4" />
               Create Ticket
             </Button>
@@ -110,24 +137,28 @@ export default function Tickets() {
             </DialogHeader>
             <div className="space-y-4 mt-4">
               <div className="space-y-2">
-                <Label>Subject</Label>
-                <Input placeholder="Brief description of the issue" />
+                <Label>Subject *</Label>
+                <Input 
+                  placeholder="Brief description of the issue"
+                  value={formData.subject}
+                  onChange={(e) => setFormData(prev => ({ ...prev, subject: e.target.value }))}
+                />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Client</Label>
-                  <Select>
+                  <Select value={formData.client_id} onValueChange={(v) => setFormData(prev => ({ ...prev, client_id: v }))}>
                     <SelectTrigger><SelectValue placeholder="Select client" /></SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="techcorp">TechCorp</SelectItem>
-                      <SelectItem value="design">Design Studio</SelectItem>
-                      <SelectItem value="startup">StartUp Nexus</SelectItem>
+                      {clients.map((client) => (
+                        <SelectItem key={client.id} value={client.id}>{client.company_name}</SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>
                 <div className="space-y-2">
                   <Label>Priority</Label>
-                  <Select defaultValue="medium">
+                  <Select value={formData.priority} onValueChange={(v: any) => setFormData(prev => ({ ...prev, priority: v }))}>
                     <SelectTrigger><SelectValue /></SelectTrigger>
                     <SelectContent>
                       <SelectItem value="low">Low</SelectItem>
@@ -140,11 +171,18 @@ export default function Tickets() {
               </div>
               <div className="space-y-2">
                 <Label>Description</Label>
-                <Textarea placeholder="Detailed description of the issue..." rows={4} />
+                <Textarea 
+                  placeholder="Detailed description of the issue..." 
+                  rows={4}
+                  value={formData.description}
+                  onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+                />
               </div>
               <div className="flex justify-end gap-3 pt-4">
-                <Button variant="outline" onClick={() => setIsCreateDialogOpen(false)}>Cancel</Button>
-                <Button onClick={() => setIsCreateDialogOpen(false)}>Create Ticket</Button>
+                <Button variant="pillowy-secondary" onClick={() => setIsCreateDialogOpen(false)}>Cancel</Button>
+                <Button variant="pillowy" onClick={handleSubmit} disabled={createTicket.isPending}>
+                  {createTicket.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : "Create Ticket"}
+                </Button>
               </div>
             </div>
           </DialogContent>
@@ -220,69 +258,88 @@ export default function Tickets() {
         </Select>
       </motion.div>
 
-      <motion.div 
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.3 }}
-        className="space-y-3"
-      >
-        {filteredTickets.map((ticket, index) => {
-          const StatusIcon = statusConfig[ticket.status].icon;
-          return (
-            <motion.div
-              key={ticket.id}
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.05 * index }}
-              className="glass-card p-4 flex items-center gap-4 hover:border-primary/20 transition-all cursor-pointer"
-            >
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-3 mb-1">
-                  <span className="font-mono text-sm text-muted-foreground">{ticket.ticketNumber}</span>
-                  <Badge variant="outline" className={`gap-1 ${statusConfig[ticket.status].color}`}>
-                    <StatusIcon className="h-3 w-3" />
-                    {statusConfig[ticket.status].label}
-                  </Badge>
-                  <Badge variant="outline" className={priorityColors[ticket.priority]}>
-                    <Flag className="h-3 w-3 mr-1" />
-                    {ticket.priority}
-                  </Badge>
-                </div>
-                <h4 className="font-medium">{ticket.subject}</h4>
-                <p className="text-sm text-muted-foreground mt-1">{ticket.client}</p>
-              </div>
+      {/* Empty State */}
+      {filteredTickets.length === 0 && (
+        <div className="glass-card p-8 text-center">
+          <MessageSquare className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+          <h3 className="font-semibold mb-2">No tickets found</h3>
+          <p className="text-muted-foreground mb-4">Create your first support ticket</p>
+          <Button variant="pillowy" onClick={() => setIsCreateDialogOpen(true)}>
+            <Plus className="h-4 w-4 mr-2" />
+            Create Ticket
+          </Button>
+        </div>
+      )}
 
-              <div className="flex items-center gap-4">
-                {ticket.assignee ? (
-                  <Avatar className="h-8 w-8">
-                    <AvatarFallback className="text-xs bg-primary/20 text-primary">{ticket.assignee}</AvatarFallback>
-                  </Avatar>
-                ) : (
-                  <Button variant="outline" size="sm" className="gap-1">
-                    <User className="h-3 w-3" />
-                    Assign
-                  </Button>
-                )}
-                <div className="text-right text-sm text-muted-foreground">
-                  <p>Updated</p>
-                  <p>{new Date(ticket.lastUpdate).toLocaleDateString()}</p>
+      {filteredTickets.length > 0 && (
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.3 }}
+          className="space-y-3"
+        >
+          {filteredTickets.map((ticket, index) => {
+            const StatusIcon = statusConfig[ticket.status]?.icon || AlertCircle;
+            return (
+              <motion.div
+                key={ticket.id}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.05 * index }}
+                className="glass-card p-4 flex items-center gap-4 hover:border-primary/20 transition-all cursor-pointer"
+              >
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-3 mb-1">
+                    <span className="font-mono text-sm text-muted-foreground">{ticket.ticket_number}</span>
+                    <Badge variant="outline" className={`gap-1 ${statusConfig[ticket.status]?.color || ""}`}>
+                      <StatusIcon className="h-3 w-3" />
+                      {statusConfig[ticket.status]?.label || ticket.status}
+                    </Badge>
+                    <Badge variant="outline" className={priorityColors[ticket.priority]}>
+                      <Flag className="h-3 w-3 mr-1" />
+                      {ticket.priority}
+                    </Badge>
+                  </div>
+                  <h4 className="font-medium">{ticket.subject}</h4>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    {(ticket as any).clients?.company_name || "No client"}
+                  </p>
                 </div>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon"><MoreHorizontal className="h-4 w-4" /></Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuItem>View Details</DropdownMenuItem>
-                    <DropdownMenuItem>Assign</DropdownMenuItem>
-                    <DropdownMenuItem>Change Status</DropdownMenuItem>
-                    <DropdownMenuItem className="text-gnexus-success">Mark Resolved</DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
-            </motion.div>
-          );
-        })}
-      </motion.div>
+
+                <div className="flex items-center gap-4">
+                  {ticket.assigned_to ? (
+                    <Avatar className="h-8 w-8">
+                      <AvatarFallback className="text-xs bg-primary/20 text-primary">
+                        {ticket.assigned_to.slice(0, 2).toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                  ) : (
+                    <Button variant="pillowy-secondary" size="sm" className="gap-1">
+                      <User className="h-3 w-3" />
+                      Assign
+                    </Button>
+                  )}
+                  <div className="text-right text-sm text-muted-foreground">
+                    <p>Updated</p>
+                    <p>{new Date(ticket.updated_at).toLocaleDateString()}</p>
+                  </div>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="icon"><MoreHorizontal className="h-4 w-4" /></Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem>View Details</DropdownMenuItem>
+                      <DropdownMenuItem>Assign</DropdownMenuItem>
+                      <DropdownMenuItem>Change Status</DropdownMenuItem>
+                      <DropdownMenuItem className="text-gnexus-success">Mark Resolved</DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+              </motion.div>
+            );
+          })}
+        </motion.div>
+      )}
     </div>
   );
 }

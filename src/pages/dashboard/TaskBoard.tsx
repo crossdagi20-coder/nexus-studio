@@ -2,7 +2,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { 
   Plus, MoreHorizontal, Calendar, User, Flag, Clock,
-  GripVertical, ChevronDown
+  GripVertical, Loader2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -30,33 +30,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useTasks, useCreateTask, useUpdateTask } from "@/hooks/useTasks";
+import { useProjects } from "@/hooks/useProjects";
+import { useTasksRealtime } from "@/hooks/useRealtimeSubscription";
+import { toast } from "sonner";
 
 type TaskStatus = "backlog" | "todo" | "in_progress" | "review" | "done";
-
-interface Task {
-  id: string;
-  title: string;
-  description?: string;
-  status: TaskStatus;
-  priority: "low" | "medium" | "high";
-  assignee?: string;
-  dueDate?: string;
-  project?: string;
-  estimatedHours?: number;
-}
-
-const mockTasks: Task[] = [
-  { id: "1", title: "Design system audit", status: "backlog", priority: "medium", project: "TechCorp Website" },
-  { id: "2", title: "Create wireframes for dashboard", status: "backlog", priority: "high", assignee: "JD", project: "Mobile App" },
-  { id: "3", title: "Review brand guidelines", status: "todo", priority: "low", assignee: "SC", dueDate: "2025-01-05" },
-  { id: "4", title: "Develop homepage hero section", status: "todo", priority: "high", assignee: "MR", dueDate: "2025-01-03", estimatedHours: 8 },
-  { id: "5", title: "API integration for payments", status: "in_progress", priority: "high", assignee: "JD", dueDate: "2025-01-02", estimatedHours: 12 },
-  { id: "6", title: "Mobile responsive fixes", status: "in_progress", priority: "medium", assignee: "SC", estimatedHours: 4 },
-  { id: "7", title: "User testing session prep", status: "review", priority: "medium", assignee: "MR", dueDate: "2025-01-04" },
-  { id: "8", title: "Analytics dashboard charts", status: "review", priority: "low", assignee: "JD" },
-  { id: "9", title: "Launch landing page", status: "done", priority: "high", assignee: "SC" },
-  { id: "10", title: "SEO optimization", status: "done", priority: "medium", assignee: "MR" },
-];
 
 const columns: { id: TaskStatus; title: string; color: string }[] = [
   { id: "backlog", title: "Backlog", color: "text-muted-foreground" },
@@ -73,9 +52,26 @@ const priorityColors: Record<string, string> = {
 };
 
 export default function TaskBoard() {
-  const [tasks, setTasks] = useState<Task[]>(mockTasks);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [draggedTask, setDraggedTask] = useState<string | null>(null);
+  const [formData, setFormData] = useState({
+    title: "",
+    description: "",
+    priority: "medium",
+    status: "backlog",
+    project_id: "",
+    due_date: "",
+    estimated_hours: "",
+  });
+
+  // Real-time subscription
+  useTasksRealtime();
+
+  // Data hooks
+  const { data: tasks = [], isLoading } = useTasks();
+  const { data: projects = [] } = useProjects();
+  const createTask = useCreateTask();
+  const updateTask = useUpdateTask();
 
   const handleDragStart = (taskId: string) => {
     setDraggedTask(taskId);
@@ -85,17 +81,60 @@ export default function TaskBoard() {
     e.preventDefault();
   };
 
-  const handleDrop = (status: TaskStatus) => {
+  const handleDrop = async (status: TaskStatus) => {
     if (draggedTask) {
-      setTasks(prev => prev.map(task => 
-        task.id === draggedTask ? { ...task, status } : task
-      ));
+      try {
+        await updateTask.mutateAsync({ id: draggedTask, status });
+        toast.success("Task moved");
+      } catch (error) {
+        toast.error("Failed to move task");
+      }
       setDraggedTask(null);
     }
   };
 
   const getTasksByStatus = (status: TaskStatus) => 
     tasks.filter(task => task.status === status);
+
+  const handleSubmit = async () => {
+    if (!formData.title || !formData.project_id) {
+      toast.error("Title and project are required");
+      return;
+    }
+
+    try {
+      await createTask.mutateAsync({
+        title: formData.title,
+        description: formData.description || null,
+        priority: formData.priority,
+        status: formData.status,
+        project_id: formData.project_id,
+        due_date: formData.due_date || null,
+        estimated_hours: formData.estimated_hours ? parseFloat(formData.estimated_hours) : null,
+      });
+      toast.success("Task created");
+      setIsAddDialogOpen(false);
+      setFormData({
+        title: "",
+        description: "",
+        priority: "medium",
+        status: "backlog",
+        project_id: "",
+        due_date: "",
+        estimated_hours: "",
+      });
+    } catch (error) {
+      toast.error("Failed to create task");
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6 h-full">
@@ -111,7 +150,7 @@ export default function TaskBoard() {
         </div>
         <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
           <DialogTrigger asChild>
-            <Button className="gap-2">
+            <Button variant="pillowy" className="gap-2">
               <Plus className="h-4 w-4" />
               Add Task
             </Button>
@@ -122,17 +161,39 @@ export default function TaskBoard() {
             </DialogHeader>
             <div className="space-y-4 mt-4">
               <div className="space-y-2">
-                <Label>Task Title</Label>
-                <Input placeholder="Enter task title" />
+                <Label>Task Title *</Label>
+                <Input 
+                  placeholder="Enter task title"
+                  value={formData.title}
+                  onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Project *</Label>
+                <Select value={formData.project_id} onValueChange={(v) => setFormData(prev => ({ ...prev, project_id: v }))}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select project" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {projects.map((project) => (
+                      <SelectItem key={project.id} value={project.id}>{project.name}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
               <div className="space-y-2">
                 <Label>Description</Label>
-                <Textarea placeholder="Describe the task..." rows={3} />
+                <Textarea 
+                  placeholder="Describe the task..." 
+                  rows={3}
+                  value={formData.description}
+                  onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+                />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Priority</Label>
-                  <Select defaultValue="medium">
+                  <Select value={formData.priority} onValueChange={(v) => setFormData(prev => ({ ...prev, priority: v }))}>
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
@@ -145,7 +206,7 @@ export default function TaskBoard() {
                 </div>
                 <div className="space-y-2">
                   <Label>Status</Label>
-                  <Select defaultValue="backlog">
+                  <Select value={formData.status} onValueChange={(v) => setFormData(prev => ({ ...prev, status: v }))}>
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
@@ -160,16 +221,27 @@ export default function TaskBoard() {
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Due Date</Label>
-                  <Input type="date" />
+                  <Input 
+                    type="date"
+                    value={formData.due_date}
+                    onChange={(e) => setFormData(prev => ({ ...prev, due_date: e.target.value }))}
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label>Estimated Hours</Label>
-                  <Input type="number" placeholder="0" />
+                  <Input 
+                    type="number" 
+                    placeholder="0"
+                    value={formData.estimated_hours}
+                    onChange={(e) => setFormData(prev => ({ ...prev, estimated_hours: e.target.value }))}
+                  />
                 </div>
               </div>
               <div className="flex justify-end gap-3 pt-4">
-                <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>Cancel</Button>
-                <Button onClick={() => setIsAddDialogOpen(false)}>Create Task</Button>
+                <Button variant="pillowy-secondary" onClick={() => setIsAddDialogOpen(false)}>Cancel</Button>
+                <Button variant="pillowy" onClick={handleSubmit} disabled={createTask.isPending}>
+                  {createTask.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : "Create Task"}
+                </Button>
               </div>
             </div>
           </DialogContent>
@@ -225,8 +297,8 @@ export default function TaskBoard() {
                       <GripVertical className="h-4 w-4 text-muted-foreground/50 flex-shrink-0 mt-0.5 cursor-grab" />
                       <div className="flex-1 min-w-0">
                         <p className="font-medium text-sm leading-snug">{task.title}</p>
-                        {task.project && (
-                          <p className="text-xs text-muted-foreground mt-1">{task.project}</p>
+                        {task.description && (
+                          <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{task.description}</p>
                         )}
                       </div>
                       <DropdownMenu>
@@ -249,28 +321,28 @@ export default function TaskBoard() {
                         {task.priority}
                       </Badge>
                       
-                      {task.estimatedHours && (
+                      {task.estimated_hours && (
                         <span className="text-xs text-muted-foreground flex items-center gap-1">
                           <Clock className="h-3 w-3" />
-                          {task.estimatedHours}h
+                          {task.estimated_hours}h
                         </span>
                       )}
                     </div>
 
                     <div className="flex items-center justify-between mt-3 pt-3 border-t border-border/50">
-                      {task.dueDate ? (
+                      {task.due_date ? (
                         <span className="text-xs text-muted-foreground flex items-center gap-1">
                           <Calendar className="h-3 w-3" />
-                          {new Date(task.dueDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                          {new Date(task.due_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                         </span>
                       ) : (
                         <span></span>
                       )}
                       
-                      {task.assignee ? (
+                      {task.assigned_to ? (
                         <Avatar className="h-6 w-6">
                           <AvatarFallback className="text-xs bg-primary/20 text-primary">
-                            {task.assignee}
+                            {task.assigned_to.slice(0, 2).toUpperCase()}
                           </AvatarFallback>
                         </Avatar>
                       ) : (

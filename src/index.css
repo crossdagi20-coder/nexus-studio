@@ -450,6 +450,134 @@
   .metric-pill-down {
     @apply bg-destructive/15 text-destructive;
   }
+
+  /* Pillowy 3D Button System */
+  .btn-pillowy {
+    @apply relative rounded-xl font-medium;
+    background: linear-gradient(
+      145deg,
+      hsl(var(--primary)),
+      hsl(var(--primary) / 0.85)
+    );
+    box-shadow: 
+      0 8px 24px -4px hsl(var(--primary) / 0.4),
+      0 4px 10px -2px hsl(0 0% 0% / 0.25),
+      inset 0 2px 4px hsl(0 0% 100% / 0.15),
+      inset 0 -2px 4px hsl(0 0% 0% / 0.15);
+    transform: translateY(0);
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .btn-pillowy:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 
+      0 12px 32px -4px hsl(var(--primary) / 0.5),
+      0 6px 16px -2px hsl(0 0% 0% / 0.3),
+      inset 0 2px 6px hsl(0 0% 100% / 0.2),
+      inset 0 -2px 4px hsl(0 0% 0% / 0.15);
+  }
+
+  .btn-pillowy:active {
+    transform: translateY(1px) scale(0.98);
+    box-shadow: 
+      0 4px 12px -2px hsl(var(--primary) / 0.35),
+      0 2px 6px -1px hsl(0 0% 0% / 0.2),
+      inset 0 3px 6px hsl(0 0% 0% / 0.2),
+      inset 0 -1px 2px hsl(0 0% 100% / 0.1);
+  }
+
+  .btn-pillowy-secondary {
+    @apply relative rounded-xl font-medium;
+    background: linear-gradient(
+      145deg,
+      hsl(var(--secondary)),
+      hsl(var(--muted))
+    );
+    box-shadow: 
+      0 6px 20px -4px hsl(0 0% 0% / 0.35),
+      0 3px 8px -2px hsl(0 0% 0% / 0.2),
+      inset 0 2px 4px hsl(var(--gnexus-glass) / 0.08),
+      inset 0 -2px 4px hsl(0 0% 0% / 0.1);
+    transform: translateY(0);
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .btn-pillowy-secondary:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 
+      0 10px 28px -4px hsl(0 0% 0% / 0.45),
+      0 5px 12px -2px hsl(0 0% 0% / 0.25),
+      inset 0 2px 6px hsl(var(--gnexus-glass) / 0.12),
+      inset 0 -2px 4px hsl(0 0% 0% / 0.1);
+  }
+
+  .btn-pillowy-secondary:active {
+    transform: translateY(1px) scale(0.98);
+    box-shadow: 
+      0 3px 10px -2px hsl(0 0% 0% / 0.3),
+      0 1px 4px -1px hsl(0 0% 0% / 0.15),
+      inset 0 3px 6px hsl(0 0% 0% / 0.15),
+      inset 0 -1px 2px hsl(var(--gnexus-glass) / 0.05);
+  }
+
+  .btn-pillowy-ghost {
+    @apply relative rounded-xl font-medium;
+    background: transparent;
+    box-shadow: 
+      0 4px 16px -4px hsl(0 0% 0% / 0.15),
+      inset 0 1px 2px hsl(var(--gnexus-glass) / 0.05);
+    transform: translateY(0);
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .btn-pillowy-ghost:hover {
+    background: hsl(var(--secondary) / 0.5);
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 
+      0 6px 20px -4px hsl(0 0% 0% / 0.25),
+      inset 0 2px 4px hsl(var(--gnexus-glass) / 0.08);
+  }
+
+  .btn-pillowy-ghost:active {
+    transform: translateY(1px) scale(0.98);
+    box-shadow: 
+      0 2px 8px -2px hsl(0 0% 0% / 0.15),
+      inset 0 2px 4px hsl(0 0% 0% / 0.1);
+  }
+
+  .btn-pillowy-destructive {
+    @apply relative rounded-xl font-medium;
+    background: linear-gradient(
+      145deg,
+      hsl(var(--destructive)),
+      hsl(var(--destructive) / 0.85)
+    );
+    box-shadow: 
+      0 8px 24px -4px hsl(var(--destructive) / 0.4),
+      0 4px 10px -2px hsl(0 0% 0% / 0.25),
+      inset 0 2px 4px hsl(0 0% 100% / 0.15),
+      inset 0 -2px 4px hsl(0 0% 0% / 0.15);
+    transform: translateY(0);
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .btn-pillowy-destructive:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 
+      0 12px 32px -4px hsl(var(--destructive) / 0.5),
+      0 6px 16px -2px hsl(0 0% 0% / 0.3),
+      inset 0 2px 6px hsl(0 0% 100% / 0.2),
+      inset 0 -2px 4px hsl(0 0% 0% / 0.15);
+  }
+
+  .btn-pillowy-destructive:active {
+    transform: translateY(1px) scale(0.98);
+    box-shadow: 
+      0 4px 12px -2px hsl(var(--destructive) / 0.35),
+      0 2px 6px -1px hsl(0 0% 0% / 0.2),
+      inset 0 3px 6px hsl(0 0% 0% / 0.2),
+      inset 0 -1px 2px hsl(0 0% 100% / 0.1);
+  }
 }
 
 @layer utilities {
