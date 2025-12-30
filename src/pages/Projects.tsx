@@ -25,6 +25,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useProjects } from "@/hooks/useProjects";
+import { useProjectsRealtime } from "@/hooks/useRealtimeSubscription";
 import { Skeleton } from "@/components/ui/skeleton";
 
 type ViewMode = "grid" | "list";
@@ -60,6 +61,9 @@ const priorityColors: Record<string, string> = {
 };
 
 export default function Projects() {
+  // Enable real-time updates
+  useProjectsRealtime();
+
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
   const [serviceFilter, setServiceFilter] = useState<ServiceType>("all");
   const [statusFilter, setStatusFilter] = useState<StatusType>("all");

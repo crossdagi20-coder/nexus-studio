@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useDashboardStats, useRecentProjects, useUpcomingTasks } from "@/hooks/useDashboardStats";
+import { useDashboardRealtime } from "@/hooks/useRealtimeSubscription";
 import { Skeleton } from "@/components/ui/skeleton";
 import { format } from "date-fns";
 
@@ -53,6 +54,9 @@ function formatCurrency(amount: number) {
 }
 
 export default function Dashboard() {
+  // Enable real-time updates
+  useDashboardRealtime();
+
   const { data: stats, isLoading: statsLoading } = useDashboardStats();
   const { data: recentProjects, isLoading: projectsLoading } = useRecentProjects();
   const { data: upcomingTasks, isLoading: tasksLoading } = useUpcomingTasks();
