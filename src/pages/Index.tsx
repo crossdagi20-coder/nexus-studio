@@ -8,6 +8,8 @@ import { ParticleSphere } from "@/components/ui/ParticleSphere";
 import { CounterStats } from "@/components/ui/CounterStats";
 import { ServiceCard } from "@/components/ui/ServiceCard";
 import { ScrollReveal, ParallaxElement, StaggerContainer, StaggerItem, TextReveal, ScrollProgress } from "@/components/animations";
+import { ShapesGroup, presets } from "@/components/3d";
+import { FloatingCube, FloatingTorus, FloatingSphere, FloatingPyramid, FloatingOctahedron } from "@/components/3d";
 
 const services = [
   { 
@@ -89,6 +91,22 @@ export default function Index() {
         {/* Subtle grid pattern */}
         <div className="absolute inset-0 grid-pattern opacity-20" />
         
+        {/* Floating 3D shapes */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-[15%] left-[5%]">
+            <FloatingCube size="lg" color="primary" rotateSpeed="slow" />
+          </div>
+          <div className="absolute top-[25%] right-[8%]">
+            <FloatingTorus size="md" color="accent" rotateSpeed="medium" />
+          </div>
+          <div className="absolute bottom-[20%] left-[10%]">
+            <FloatingOctahedron size="md" color="purple" rotateSpeed="slow" />
+          </div>
+          <div className="absolute bottom-[35%] right-[15%]">
+            <FloatingSphere size="sm" color="coral" />
+          </div>
+        </div>
+        
         <div className="container mx-auto px-6 relative z-10">
           <div className="grid lg:grid-cols-2 gap-16 items-center min-h-[80vh]">
             {/* Left: Content with parallax */}
@@ -167,15 +185,34 @@ export default function Index() {
       </section>
 
       {/* Stats Bar */}
-      <section className="border-y border-border/30 bg-card/30 backdrop-blur-sm">
+      <section className="border-y border-border/30 bg-card/30 backdrop-blur-sm relative overflow-hidden">
+        <div className="absolute top-[50%] left-[5%] -translate-y-1/2 pointer-events-none">
+          <FloatingSphere size="sm" color="primary" />
+        </div>
+        <div className="absolute top-[50%] right-[5%] -translate-y-1/2 pointer-events-none">
+          <FloatingSphere size="sm" color="accent" />
+        </div>
         <div className="container mx-auto">
           <CounterStats stats={stats} />
         </div>
       </section>
 
       {/* Services Section */}
-      <section className="py-32 relative">
+      <section className="py-32 relative overflow-hidden">
         <ParallaxElement yOffset={[50, -50]} className="absolute top-20 right-0 w-96 h-96 bg-primary/5 rounded-full blur-[120px] pointer-events-none" />
+        
+        {/* Floating shapes */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-[10%] left-[-2%]">
+            <FloatingPyramid size="lg" color="gold" rotateSpeed="slow" />
+          </div>
+          <div className="absolute bottom-[15%] right-[3%]">
+            <FloatingCube size="md" color="primary" rotateSpeed="medium" />
+          </div>
+          <div className="absolute top-[50%] right-[8%]">
+            <FloatingSphere size="sm" color="accent" />
+          </div>
+        </div>
         
         <div className="container mx-auto px-6">
           <ScrollReveal variant="fadeUp" className="mb-16">
@@ -205,9 +242,19 @@ export default function Index() {
       </section>
 
       {/* Features Section */}
-      <section className="py-32 relative bg-card/50">
+      <section className="py-32 relative bg-card/50 overflow-hidden">
         <div className="absolute inset-0 grid-pattern opacity-10" />
         <ParallaxElement yOffset={[-30, 30]} className="absolute bottom-20 left-0 w-72 h-72 bg-accent/5 rounded-full blur-[100px] pointer-events-none" />
+        
+        {/* Floating shapes */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-[10%] right-[5%]">
+            <FloatingTorus size="sm" color="accent" rotateSpeed="slow" />
+          </div>
+          <div className="absolute bottom-[10%] left-[3%]">
+            <FloatingSphere size="md" color="coral" />
+          </div>
+        </div>
         
         <div className="container mx-auto px-6 relative z-10">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
@@ -238,7 +285,10 @@ export default function Index() {
 
             <ScrollReveal variant="slideRight" delay={0.2}>
               <ParallaxElement yOffset={[-20, 20]}>
-                <div className="rounded-2xl border border-border/50 bg-card/80 backdrop-blur-sm p-8">
+                <div className="rounded-2xl border border-border/50 bg-card/80 backdrop-blur-sm p-8 relative">
+                  <div className="absolute -top-6 -right-6 pointer-events-none">
+                    <FloatingCube size="sm" color="primary" rotateSpeed="medium" />
+                  </div>
                   <div className="aspect-video rounded-xl bg-gradient-to-br from-primary/5 to-accent/5 flex items-center justify-center border border-border/30">
                     <div className="text-center">
                       <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-primary/10 flex items-center justify-center">
@@ -257,6 +307,19 @@ export default function Index() {
       {/* CTA Section */}
       <section className="py-32 relative overflow-hidden">
         <ParallaxElement yOffset={[100, -100]} className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-gradient-radial from-primary/5 to-transparent rounded-full pointer-events-none" />
+        
+        {/* Floating shapes */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-[20%] left-[10%]">
+            <FloatingTorus size="lg" color="primary" rotateSpeed="slow" />
+          </div>
+          <div className="absolute top-[30%] right-[15%]">
+            <FloatingSphere size="sm" color="accent" />
+          </div>
+          <div className="absolute bottom-[25%] right-[10%]">
+            <FloatingSphere size="md" color="coral" />
+          </div>
+        </div>
         
         <div className="container mx-auto px-6">
           <ScrollReveal variant="scaleUp" className="text-center max-w-3xl mx-auto">

@@ -19,6 +19,7 @@ import {
   StaggerContainer, 
   StaggerItem 
 } from "@/components/animations";
+import { FloatingPyramid, FloatingCube, FloatingTorus, FloatingSphere, FloatingOctahedron } from "@/components/3d";
 
 const services = [
   {
@@ -56,11 +57,30 @@ export default function GraphicDesign() {
       <ScrollProgress />
       
       {/* Hero */}
-      <section className="relative min-h-[70vh] flex items-center">
+      <section className="relative min-h-[70vh] flex items-center overflow-hidden">
         <div className="absolute inset-0 grid-pattern opacity-30" />
         <ParallaxElement yOffset={[30, -70]} className="absolute top-40 left-40 w-96 h-96">
           <div className="w-full h-full bg-amber-500/20 rounded-full blur-[120px]" />
         </ParallaxElement>
+        
+        {/* Floating 3D shapes - colorful for design */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-[15%] right-[8%]">
+            <FloatingPyramid size="lg" color="gold" rotateSpeed="slow" />
+          </div>
+          <div className="absolute top-[50%] right-[5%]">
+            <FloatingCube size="md" color="coral" rotateSpeed="medium" />
+          </div>
+          <div className="absolute bottom-[20%] right-[15%]">
+            <FloatingTorus size="sm" color="purple" rotateSpeed="slow" />
+          </div>
+          <div className="absolute bottom-[40%] left-[3%]">
+            <FloatingSphere size="md" color="accent" />
+          </div>
+          <div className="absolute top-[25%] left-[5%]">
+            <FloatingOctahedron size="sm" color="gold" rotateSpeed="medium" />
+          </div>
+        </div>
         
         <div className="container mx-auto px-6 relative">
           <div className="max-w-3xl">
@@ -106,7 +126,16 @@ export default function GraphicDesign() {
       </section>
 
       {/* Services Grid */}
-      <section className="py-24 relative">
+      <section className="py-24 relative overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-[10%] left-[3%]">
+            <FloatingCube size="md" color="gold" rotateSpeed="slow" />
+          </div>
+          <div className="absolute bottom-[10%] right-[5%]">
+            <FloatingPyramid size="sm" color="coral" rotateSpeed="medium" />
+          </div>
+        </div>
+        
         <div className="container mx-auto px-6">
           <ScrollReveal variant="fadeUp" className="text-center mb-16">
             <h2 className="font-serif text-4xl md:text-5xl font-bold mb-4">
@@ -134,7 +163,16 @@ export default function GraphicDesign() {
       </section>
 
       {/* Portfolio Preview */}
-      <section className="py-24 bg-secondary/30">
+      <section className="py-24 bg-secondary/30 relative overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-[20%] right-[5%]">
+            <FloatingTorus size="md" color="gold" rotateSpeed="slow" />
+          </div>
+          <div className="absolute bottom-[20%] left-[5%]">
+            <FloatingSphere size="sm" color="coral" />
+          </div>
+        </div>
+        
         <div className="container mx-auto px-6">
           <ScrollReveal variant="fadeUp" className="text-center mb-12">
             <h2 className="font-serif text-4xl font-bold mb-4">Recent Work</h2>
@@ -164,10 +202,22 @@ export default function GraphicDesign() {
       </section>
 
       {/* CTA */}
-      <section className="py-24">
+      <section className="py-24 relative overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-[20%] left-[10%]">
+            <FloatingOctahedron size="lg" color="gold" rotateSpeed="slow" />
+          </div>
+          <div className="absolute bottom-[20%] right-[10%]">
+            <FloatingSphere size="md" color="coral" />
+          </div>
+        </div>
+        
         <div className="container mx-auto px-6">
           <ScrollReveal variant="scaleUp" className="max-w-3xl mx-auto">
-            <div className="glass-card p-12 text-center">
+            <div className="glass-card p-12 text-center relative">
+              <div className="absolute -top-6 -right-6 pointer-events-none">
+                <FloatingCube size="sm" color="gold" rotateSpeed="medium" />
+              </div>
               <Sparkles className="w-16 h-16 text-amber-500 mx-auto mb-6" />
               <h2 className="font-serif text-4xl font-bold mb-4">Ready to Stand Out?</h2>
               <p className="text-xl text-muted-foreground mb-8">

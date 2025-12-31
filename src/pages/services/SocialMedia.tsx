@@ -21,6 +21,7 @@ import {
   StaggerContainer, 
   StaggerItem 
 } from "@/components/animations";
+import { FloatingOctahedron, FloatingSphere, FloatingTorus, FloatingCube } from "@/components/3d";
 
 const services = [
   {
@@ -58,11 +59,30 @@ export default function SocialMedia() {
       <ScrollProgress />
       
       {/* Hero */}
-      <section className="relative min-h-[70vh] flex items-center">
+      <section className="relative min-h-[70vh] flex items-center overflow-hidden">
         <div className="absolute inset-0 grid-pattern opacity-30" />
         <ParallaxElement yOffset={[40, -80]} className="absolute bottom-20 right-20 w-96 h-96">
           <div className="w-full h-full bg-pink-500/20 rounded-full blur-[120px]" />
         </ParallaxElement>
+        
+        {/* Floating 3D shapes - bubble-like for social */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-[15%] right-[8%]">
+            <FloatingOctahedron size="lg" color="coral" rotateSpeed="slow" />
+          </div>
+          <div className="absolute top-[45%] right-[5%]">
+            <FloatingSphere size="md" color="purple" />
+          </div>
+          <div className="absolute bottom-[25%] right-[15%]">
+            <FloatingSphere size="sm" color="accent" />
+          </div>
+          <div className="absolute top-[30%] left-[5%]">
+            <FloatingSphere size="md" color="coral" />
+          </div>
+          <div className="absolute bottom-[35%] left-[3%]">
+            <FloatingTorus size="sm" color="purple" rotateSpeed="medium" />
+          </div>
+        </div>
         
         <div className="container mx-auto px-6 relative">
           <div className="max-w-3xl">
@@ -108,7 +128,16 @@ export default function SocialMedia() {
       </section>
 
       {/* Platforms */}
-      <section className="py-16">
+      <section className="py-16 relative overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-[50%] left-[3%] -translate-y-1/2">
+            <FloatingSphere size="sm" color="coral" />
+          </div>
+          <div className="absolute top-[50%] right-[3%] -translate-y-1/2">
+            <FloatingSphere size="sm" color="purple" />
+          </div>
+        </div>
+        
         <div className="container mx-auto px-6">
           <ScrollReveal variant="fadeUp" className="text-center mb-12">
             <h2 className="font-serif text-2xl font-semibold">Platforms We Master</h2>
@@ -130,7 +159,16 @@ export default function SocialMedia() {
       </section>
 
       {/* Services Grid */}
-      <section className="py-24 bg-secondary/30">
+      <section className="py-24 bg-secondary/30 relative overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-[10%] left-[3%]">
+            <FloatingOctahedron size="md" color="coral" rotateSpeed="slow" />
+          </div>
+          <div className="absolute bottom-[10%] right-[5%]">
+            <FloatingSphere size="md" color="purple" />
+          </div>
+        </div>
+        
         <div className="container mx-auto px-6">
           <ScrollReveal variant="fadeUp" className="text-center mb-16">
             <h2 className="font-serif text-4xl md:text-5xl font-bold mb-4">
@@ -158,10 +196,25 @@ export default function SocialMedia() {
       </section>
 
       {/* CTA */}
-      <section className="py-24">
+      <section className="py-24 relative overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-[20%] left-[10%]">
+            <FloatingTorus size="lg" color="coral" rotateSpeed="slow" />
+          </div>
+          <div className="absolute bottom-[20%] right-[10%]">
+            <FloatingSphere size="md" color="purple" />
+          </div>
+          <div className="absolute top-[50%] right-[5%]">
+            <FloatingCube size="sm" color="accent" rotateSpeed="medium" />
+          </div>
+        </div>
+        
         <div className="container mx-auto px-6">
           <ScrollReveal variant="scaleUp" className="max-w-3xl mx-auto">
-            <div className="glass-card p-12 text-center">
+            <div className="glass-card p-12 text-center relative">
+              <div className="absolute -top-6 -right-6 pointer-events-none">
+                <FloatingSphere size="sm" color="coral" />
+              </div>
               <Share2 className="w-16 h-16 text-pink-500 mx-auto mb-6" />
               <h2 className="font-serif text-4xl font-bold mb-4">Ready to Go Viral?</h2>
               <p className="text-xl text-muted-foreground mb-8">
