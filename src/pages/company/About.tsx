@@ -68,13 +68,13 @@ export default function About() {
             <FloatingCube size="lg" color="primary" rotateSpeed="slow" />
           </div>
           <div className="absolute top-[45%] right-[5%]">
-            <FloatingSphere size="md" color="accent" />
+            <FloatingSphere size="md" color="secondary" />
           </div>
           <div className="absolute bottom-[20%] right-[15%]">
-            <FloatingOctahedron size="sm" color="coral" rotateSpeed="medium" />
+            <FloatingOctahedron size="sm" color="highlight" rotateSpeed="medium" />
           </div>
           <div className="absolute bottom-[30%] left-[5%]">
-            <FloatingPyramid size="md" color="gold" rotateSpeed="slow" />
+            <FloatingPyramid size="md" color="primary" rotateSpeed="slow" />
           </div>
         </div>
         
@@ -100,7 +100,7 @@ export default function About() {
           <FloatingSphere size="sm" color="primary" />
         </div>
         <div className="absolute top-[50%] right-[3%] -translate-y-1/2 pointer-events-none">
-          <FloatingSphere size="sm" color="accent" />
+          <FloatingSphere size="sm" color="secondary" />
         </div>
         
         <div className="container mx-auto px-6">
@@ -124,7 +124,7 @@ export default function About() {
             <FloatingCube size="md" color="primary" rotateSpeed="slow" />
           </div>
           <div className="absolute bottom-[20%] right-[10%]">
-            <FloatingPyramid size="sm" color="gold" rotateSpeed="medium" />
+            <FloatingPyramid size="sm" color="secondary" rotateSpeed="medium" />
           </div>
         </div>
         
@@ -177,7 +177,7 @@ export default function About() {
             <FloatingTorus size="lg" color="primary" rotateSpeed="slow" />
           </div>
           <div className="absolute bottom-[15%] left-[5%]">
-            <FloatingSphere size="md" color="accent" />
+            <FloatingSphere size="md" color="secondary" />
           </div>
         </div>
         
@@ -214,13 +214,13 @@ export default function About() {
             <FloatingCube size="sm" color="primary" rotateSpeed="slow" />
           </div>
           <div className="absolute top-[10%] right-[5%]">
-            <FloatingCube size="sm" color="accent" rotateSpeed="medium" />
+            <FloatingCube size="sm" color="secondary" rotateSpeed="medium" />
           </div>
           <div className="absolute bottom-[10%] left-[8%]">
-            <FloatingSphere size="sm" color="coral" />
+            <FloatingSphere size="sm" color="highlight" />
           </div>
           <div className="absolute bottom-[10%] right-[8%]">
-            <FloatingSphere size="sm" color="gold" />
+            <FloatingSphere size="sm" color="primary" />
           </div>
         </div>
         
@@ -266,7 +266,7 @@ export default function About() {
             <FloatingPyramid size="lg" color="primary" rotateSpeed="slow" />
           </div>
           <div className="absolute bottom-[20%] right-[10%]">
-            <FloatingSphere size="md" color="accent" />
+            <FloatingSphere size="md" color="secondary" />
           </div>
         </div>
         

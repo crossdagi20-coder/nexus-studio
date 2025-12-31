@@ -27,13 +27,13 @@ export default function Contact() {
             <FloatingTorus size="lg" color="primary" rotateSpeed="slow" />
           </div>
           <div className="absolute top-[50%] right-[5%]">
-            <FloatingSphere size="md" color="accent" />
+            <FloatingSphere size="md" color="secondary" />
           </div>
           <div className="absolute bottom-[25%] right-[15%]">
-            <FloatingCube size="sm" color="coral" rotateSpeed="medium" />
+            <FloatingCube size="sm" color="highlight" rotateSpeed="medium" />
           </div>
           <div className="absolute bottom-[40%] left-[5%]">
-            <FloatingOctahedron size="md" color="gold" rotateSpeed="slow" />
+            <FloatingOctahedron size="md" color="primary" rotateSpeed="slow" />
           </div>
         </div>
         
@@ -57,7 +57,7 @@ export default function Contact() {
             <FloatingSphere size="sm" color="primary" />
           </div>
           <div className="absolute bottom-[20%] right-[3%]">
-            <FloatingTorus size="md" color="accent" rotateSpeed="slow" />
+            <FloatingTorus size="md" color="secondary" rotateSpeed="slow" />
           </div>
         </div>
         

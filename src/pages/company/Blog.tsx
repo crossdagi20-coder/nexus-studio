@@ -80,10 +80,10 @@ export default function Blog() {
             <FloatingCube size="md" color="primary" rotateSpeed="slow" />
           </div>
           <div className="absolute bottom-[30%] right-[5%]">
-            <FloatingSphere size="sm" color="accent" />
+            <FloatingSphere size="sm" color="secondary" />
           </div>
           <div className="absolute bottom-[40%] left-[5%]">
-            <FloatingPyramid size="sm" color="gold" rotateSpeed="medium" />
+            <FloatingPyramid size="sm" color="highlight" rotateSpeed="medium" />
           </div>
         </div>
         
@@ -129,7 +129,7 @@ export default function Blog() {
             <FloatingSphere size="sm" color="primary" />
           </div>
           <div className="absolute bottom-[20%] right-[3%]">
-            <FloatingTorus size="md" color="accent" rotateSpeed="slow" />
+            <FloatingTorus size="md" color="secondary" rotateSpeed="slow" />
           </div>
         </div>
         
@@ -189,7 +189,7 @@ export default function Blog() {
             <FloatingCube size="md" color="primary" rotateSpeed="slow" />
           </div>
           <div className="absolute bottom-[20%] right-[10%]">
-            <FloatingSphere size="sm" color="accent" />
+            <FloatingSphere size="sm" color="secondary" />
           </div>
         </div>
         
@@ -197,7 +197,7 @@ export default function Blog() {
           <ScrollReveal variant="scaleUp">
             <div className="glass-card p-12 text-center max-w-3xl mx-auto relative">
               <div className="absolute -top-6 -right-6 pointer-events-none">
-                <FloatingPyramid size="sm" color="gold" rotateSpeed="medium" />
+                <FloatingPyramid size="sm" color="highlight" rotateSpeed="medium" />
               </div>
               <h2 className="font-serif text-4xl font-bold mb-4">Stay Updated</h2>
               <p className="text-xl text-muted-foreground mb-8">
