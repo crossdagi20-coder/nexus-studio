@@ -7,10 +7,11 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 const navLinks = [
-  { name: "Services", href: "/services" },
-  { name: "Portfolio", href: "/portfolio" },
-  { name: "About", href: "/about" },
-  { name: "Contact", href: "/contact" },
+  { number: "01", name: "home", href: "/" },
+  { number: "02", name: "expertise", href: "/services" },
+  { number: "03", name: "work", href: "/portfolio" },
+  { number: "04", name: "experience", href: "/about" },
+  { number: "05", name: "contact", href: "/contact" },
 ];
 
 export function Navbar() {
@@ -27,44 +28,48 @@ export function Navbar() {
     >
       <nav className="container mx-auto px-6 py-6">
         <div className="flex items-center justify-between">
-          {/* Logo */}
-          <Link to="/" className="group flex items-center gap-3">
-            <motion.div
-              whileHover={{ rotate: 180 }}
-              transition={{ duration: 0.6 }}
-              className="w-10 h-10 rounded-full border border-border/50 bg-background/50 backdrop-blur-sm flex items-center justify-center"
-            >
-              <span className="text-lg font-semibold text-foreground">G</span>
-            </motion.div>
-            <span className="text-lg font-medium tracking-wide">
-              GNEXUS
+          {/* Logo - Monospace style with cursor */}
+          <Link to="/" className="group flex items-center gap-2">
+            <span className="font-mono text-sm text-primary tracking-wide">
+              Gnexus
             </span>
+            <motion.span
+              animate={{ opacity: [1, 0] }}
+              transition={{ duration: 0.8, repeat: Infinity, repeatType: "reverse" }}
+              className="text-primary font-mono"
+            >
+              ._
+            </motion.span>
           </Link>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-12">
+          {/* Desktop Navigation - Numbered monospace links */}
+          <div className="hidden md:flex items-center gap-8">
             {navLinks.map((link) => (
               <Link
                 key={link.name}
                 to={link.href}
                 className={cn(
-                  "text-sm tracking-wide transition-colors duration-300",
+                  "group flex items-center gap-2 font-mono text-xs tracking-wide transition-colors duration-300",
                   location.pathname === link.href
                     ? "text-foreground"
                     : "text-muted-foreground hover:text-foreground"
                 )}
               >
-                {link.name}
+                <span className="text-primary/50 text-[10px]">{link.number}</span>
+                <span className="flex items-center gap-1">
+                  <span className="text-primary/70">//</span>
+                  {link.name}
+                </span>
               </Link>
             ))}
           </div>
 
           {/* Auth Buttons */}
-          <div className="hidden md:flex items-center gap-6">
+          <div className="hidden md:flex items-center gap-4">
             {user ? (
               <>
                 <Link to="/dashboard">
-                  <Button variant="ghost" size="sm" className="text-sm tracking-wide">
+                  <Button variant="ghost" size="sm" className="font-mono text-xs tracking-wide">
                     Dashboard
                   </Button>
                 </Link>
@@ -72,29 +77,21 @@ export function Navbar() {
                   variant="ghost" 
                   size="sm"
                   onClick={() => signOut()}
-                  className="text-sm tracking-wide text-muted-foreground"
+                  className="font-mono text-xs tracking-wide text-muted-foreground"
                 >
                   Sign Out
                 </Button>
               </>
             ) : (
-              <>
-                <Link to="/auth">
-                  <Button variant="ghost" size="sm" className="text-sm tracking-wide text-muted-foreground hover:text-foreground">
-                    Sign In
-                  </Button>
-                </Link>
-                <Link to="/auth?mode=signup">
-                  <Button 
-                    size="sm" 
-                    className="group rounded-full px-6 border border-border/50 bg-transparent hover:bg-foreground hover:text-background transition-all duration-300"
-                    variant="ghost"
-                  >
-                    <span className="text-sm tracking-wide">Start Your Project</span>
-                    <ArrowRight className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
-                  </Button>
-                </Link>
-              </>
+              <Link to="/auth?mode=signup">
+                <Button 
+                  size="sm" 
+                  className="group font-mono text-xs rounded-full px-5 bg-primary text-primary-foreground hover:bg-primary/90 transition-all duration-300"
+                >
+                  <span>Start Project</span>
+                  <ArrowRight className="ml-2 w-3 h-3 transition-transform group-hover:translate-x-1" />
+                </Button>
+              </Link>
             )}
           </div>
 
@@ -114,28 +111,37 @@ export function Navbar() {
           transition={{ duration: 0.3 }}
           className="md:hidden overflow-hidden"
         >
-          <div className="py-8 space-y-6">
+          <div className="py-8 space-y-4">
             {navLinks.map((link) => (
               <Link
                 key={link.name}
                 to={link.href}
                 onClick={() => setIsOpen(false)}
-                className="block text-2xl font-light text-muted-foreground hover:text-foreground transition-colors"
+                className={cn(
+                  "flex items-center gap-3 font-mono text-lg transition-colors",
+                  location.pathname === link.href
+                    ? "text-foreground"
+                    : "text-muted-foreground hover:text-foreground"
+                )}
               >
-                {link.name}
+                <span className="text-primary/50 text-sm">{link.number}</span>
+                <span className="flex items-center gap-2">
+                  <span className="text-primary/70">//</span>
+                  {link.name}
+                </span>
               </Link>
             ))}
             <div className="pt-6 border-t border-border/30 space-y-4">
               {user ? (
                 <>
                   <Link to="/dashboard" onClick={() => setIsOpen(false)}>
-                    <Button variant="ghost" className="w-full justify-start text-lg">
+                    <Button variant="ghost" className="w-full justify-start font-mono">
                       Dashboard
                     </Button>
                   </Link>
                   <Button 
                     variant="ghost" 
-                    className="w-full justify-start text-lg text-muted-foreground"
+                    className="w-full justify-start font-mono text-muted-foreground"
                     onClick={() => {
                       signOut();
                       setIsOpen(false);
@@ -145,19 +151,12 @@ export function Navbar() {
                   </Button>
                 </>
               ) : (
-                <>
-                  <Link to="/auth" onClick={() => setIsOpen(false)}>
-                    <Button variant="ghost" className="w-full justify-start text-lg">
-                      Sign In
-                    </Button>
-                  </Link>
-                  <Link to="/auth?mode=signup" onClick={() => setIsOpen(false)}>
-                    <Button className="w-full rounded-full border border-border bg-transparent text-foreground hover:bg-foreground hover:text-background">
-                      Start Your Project
-                      <ArrowRight className="ml-2 w-4 h-4" />
-                    </Button>
-                  </Link>
-                </>
+                <Link to="/auth?mode=signup" onClick={() => setIsOpen(false)}>
+                  <Button className="w-full rounded-full bg-primary text-primary-foreground">
+                    Start Project
+                    <ArrowRight className="ml-2 w-4 h-4" />
+                  </Button>
+                </Link>
               )}
             </div>
           </div>

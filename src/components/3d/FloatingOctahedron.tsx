@@ -16,19 +16,19 @@ const sizeMap = {
   lg: 100,
 };
 
-// Unified luxury 3D color system
+// Warm amber + cool blue-gray color system (inspired by tamalsen.dev)
 const colorConfig = {
   primary: {
-    hsl: "250, 90%, 65%",
-    glow: "0 0 30px hsl(250 90% 65% / 0.4)",
+    hsl: "25, 90%, 50%",
+    glow: "0 0 30px hsl(25 90% 50% / 0.5)",
   },
   secondary: {
-    hsl: "185, 95%, 55%",
-    glow: "0 0 30px hsl(185 95% 55% / 0.4)",
+    hsl: "220, 40%, 35%",
+    glow: "0 0 20px hsl(220 40% 35% / 0.3)",
   },
   highlight: {
-    hsl: "220, 70%, 55%",
-    glow: "0 0 30px hsl(220 70% 55% / 0.4)",
+    hsl: "185, 80%, 50%",
+    glow: "0 0 25px hsl(185 80% 50% / 0.4)",
   },
 };
 

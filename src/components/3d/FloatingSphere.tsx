@@ -17,21 +17,21 @@ const sizeMap = {
   xl: "w-32 h-32",
 };
 
-// Unified luxury 3D color system
+// Warm amber + cool blue-gray color system (inspired by tamalsen.dev)
 const colorConfig = {
   primary: {
-    bg: "from-[hsl(250,90%,70%)] via-[hsl(250,85%,55%)] to-[hsl(250,80%,35%)]",
-    glow: "shadow-[0_0_50px_hsl(250_90%_65%/0.5)]",
-    highlight: "from-white/35 to-transparent",
+    bg: "from-[hsl(25,90%,55%)] via-[hsl(25,85%,45%)] to-[hsl(20,80%,30%)]",
+    glow: "shadow-[0_0_50px_hsl(25_90%_50%/0.6)]",
+    highlight: "from-white/40 to-transparent",
   },
   secondary: {
-    bg: "from-[hsl(185,95%,60%)] via-[hsl(185,90%,50%)] to-[hsl(185,85%,35%)]",
-    glow: "shadow-[0_0_50px_hsl(185_95%_55%/0.5)]",
-    highlight: "from-white/35 to-transparent",
+    bg: "from-[hsl(220,40%,40%)] via-[hsl(220,38%,30%)] to-[hsl(220,35%,18%)]",
+    glow: "shadow-[0_0_40px_hsl(220_40%_35%/0.3)]",
+    highlight: "from-white/25 to-transparent",
   },
   highlight: {
-    bg: "from-[hsl(220,70%,60%)] via-[hsl(220,65%,50%)] to-[hsl(220,60%,35%)]",
-    glow: "shadow-[0_0_50px_hsl(220_70%_55%/0.5)]",
+    bg: "from-[hsl(185,80%,55%)] via-[hsl(185,75%,45%)] to-[hsl(185,70%,30%)]",
+    glow: "shadow-[0_0_50px_hsl(185_80%_50%/0.5)]",
     highlight: "from-white/35 to-transparent",
   },
 };
