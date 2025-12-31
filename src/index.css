@@ -3,88 +3,92 @@
 @tailwind utilities;
 
 /* 
- * GNEXUS DESIGN SYSTEM v2.0
- * Modern 2025 Aesthetic
- * Deep charcoal + Violet-Blue + Electric Cyan + Coral
+ * GNEXUS DESIGN SYSTEM v3.0
+ * Modern Luxury Dark Theme
+ * Deep Graphite + Neon Violet + Electric Cyan
  */
 
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap');
 
 @layer base {
   :root {
-    /* Core backgrounds - Deep charcoal with blue undertone */
-    --background: 222 47% 5%;
-    --foreground: 210 40% 98%;
+    /* Core backgrounds - Deep graphite (near black with blue tint) */
+    --background: 222 50% 3%;
+    --foreground: 0 0% 96%;
     
-    /* Surfaces - Layered grays with better separation */
-    --card: 222 40% 8%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222 38% 10%;
-    --popover-foreground: 210 40% 98%;
+    /* Surfaces - Subtle elevation layers */
+    --card: 222 45% 6%;
+    --card-foreground: 0 0% 96%;
+    --popover: 222 40% 8%;
+    --popover-foreground: 0 0% 96%;
     
-    /* Primary - Vibrant Violet-Blue */
-    --primary: 250 85% 65%;
-    --primary-foreground: 210 40% 98%;
+    /* Primary - Neon Violet-Blue (main glow) */
+    --primary: 250 90% 65%;
+    --primary-foreground: 0 0% 98%;
     
-    /* Secondary - Elevated charcoal */
-    --secondary: 222 30% 14%;
-    --secondary-foreground: 210 30% 90%;
+    /* Secondary - Deep charcoal surface */
+    --secondary: 222 35% 10%;
+    --secondary-foreground: 0 0% 90%;
     
     /* Muted surfaces */
-    --muted: 222 25% 12%;
-    --muted-foreground: 222 15% 55%;
+    --muted: 222 30% 8%;
+    --muted-foreground: 222 15% 50%;
     
-    /* Accent - Electric Cyan */
-    --accent: 180 90% 55%;
-    --accent-foreground: 222 47% 5%;
+    /* Accent - Electric Cyan (secondary glow) */
+    --accent: 185 95% 55%;
+    --accent-foreground: 222 50% 3%;
     
-    /* Destructive - Coral/Red */
+    /* Destructive */
     --destructive: 0 75% 55%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 0 0% 98%;
     
     /* Borders and inputs */
-    --border: 222 20% 18%;
-    --input: 222 25% 14%;
-    --ring: 250 85% 65%;
+    --border: 222 25% 12%;
+    --input: 222 30% 10%;
+    --ring: 250 90% 65%;
     
     /* Radius */
     --radius: 0.75rem;
     
     /* Sidebar */
-    --sidebar-background: 222 45% 6%;
-    --sidebar-foreground: 210 30% 90%;
-    --sidebar-primary: 250 85% 65%;
-    --sidebar-primary-foreground: 210 40% 98%;
-    --sidebar-accent: 222 30% 12%;
-    --sidebar-accent-foreground: 210 40% 98%;
-    --sidebar-border: 222 20% 15%;
-    --sidebar-ring: 250 85% 65%;
+    --sidebar-background: 222 50% 4%;
+    --sidebar-foreground: 0 0% 90%;
+    --sidebar-primary: 250 90% 65%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 222 35% 8%;
+    --sidebar-accent-foreground: 0 0% 96%;
+    --sidebar-border: 222 25% 10%;
+    --sidebar-ring: 250 90% 65%;
     
-    /* Custom Gnexus tokens */
-    --gnexus-glow: 250 85% 65%;
-    --gnexus-neon: 180 90% 55%;
-    --gnexus-surface: 222 35% 10%;
-    --gnexus-glass: 222 20% 98%;
-    --gnexus-gold: 40 95% 55%;
-    --gnexus-purple: 280 80% 60%;
-    --gnexus-coral: 15 90% 60%;
+    /* Luxury 3D Color System - Consistent across all shapes */
+    --gnexus-3d-primary: 250 90% 65%;     /* Neon Violet - Main shapes */
+    --gnexus-3d-secondary: 185 95% 55%;   /* Electric Cyan - Accent shapes */
+    --gnexus-3d-highlight: 220 70% 55%;   /* Deep Blue - Detail shapes */
+    
+    /* Custom tokens */
+    --gnexus-glow: 250 90% 65%;
+    --gnexus-neon: 185 95% 55%;
+    --gnexus-surface: 222 40% 7%;
+    --gnexus-glass: 0 0% 98%;
     --gnexus-success: 150 80% 45%;
     --gnexus-warning: 35 95% 55%;
     
-    /* Gradients - Violet to Electric Blue to Cyan */
-    --gradient-primary: linear-gradient(135deg, hsl(250, 85%, 65%), hsl(220, 90%, 60%), hsl(180, 90%, 55%));
-    --gradient-accent: linear-gradient(135deg, hsl(15, 90%, 60%), hsl(330, 80%, 55%), hsl(280, 80%, 60%));
-    --gradient-gold: linear-gradient(135deg, hsl(40, 95%, 55%), hsl(25, 90%, 50%));
-    --gradient-dark: linear-gradient(180deg, hsl(222, 45%, 7%), hsl(222, 50%, 3%));
-    --gradient-surface: linear-gradient(145deg, hsl(222, 35%, 12%), hsl(222, 40%, 8%));
-    --gradient-glow: radial-gradient(ellipse at center, hsl(250, 85%, 65%, 0.15), transparent 70%);
+    /* Gradients - Violet to Cyan luxury flow */
+    --gradient-primary: linear-gradient(135deg, hsl(250, 90%, 65%), hsl(220, 85%, 60%), hsl(185, 95%, 55%));
+    --gradient-accent: linear-gradient(135deg, hsl(185, 95%, 55%), hsl(200, 90%, 50%), hsl(220, 70%, 55%));
+    --gradient-dark: linear-gradient(180deg, hsl(222, 50%, 5%), hsl(222, 55%, 2%));
+    --gradient-surface: linear-gradient(145deg, hsl(222, 40%, 8%), hsl(222, 45%, 5%));
+    --gradient-glow: radial-gradient(ellipse at center, hsl(250, 90%, 65%, 0.2), transparent 70%);
+    --gradient-neon: linear-gradient(135deg, hsl(250, 90%, 65%), hsl(185, 95%, 55%));
     
-    /* Shadows - Enhanced depth */
-    --shadow-glow: 0 0 50px hsl(250 85% 65% / 0.35), 0 0 100px hsl(180 90% 55% / 0.1);
-    --shadow-soft: 0 10px 50px -12px hsl(0 0% 0% / 0.6);
-    --shadow-clay: 10px 10px 20px hsl(0 0% 0% / 0.45), -5px -5px 15px hsl(222 25% 18% / 0.25);
-    --shadow-elevated: 0 20px 60px -15px hsl(0 0% 0% / 0.5), 0 0 40px hsl(250 85% 65% / 0.08);
-    --shadow-inset: inset 0 2px 4px hsl(0 0% 0% / 0.3);
+    /* Shadows - Neon glow depth */
+    --shadow-glow: 0 0 60px hsl(250 90% 65% / 0.4), 0 0 120px hsl(185 95% 55% / 0.15);
+    --shadow-soft: 0 10px 50px -12px hsl(0 0% 0% / 0.7);
+    --shadow-clay: 10px 10px 20px hsl(0 0% 0% / 0.5), -5px -5px 15px hsl(222 30% 15% / 0.2);
+    --shadow-elevated: 0 25px 80px -20px hsl(0 0% 0% / 0.6), 0 0 50px hsl(250 90% 65% / 0.1);
+    --shadow-inset: inset 0 2px 4px hsl(0 0% 0% / 0.4);
+    --shadow-neon-primary: 0 0 40px hsl(250 90% 65% / 0.5), 0 0 80px hsl(250 90% 65% / 0.25);
+    --shadow-neon-secondary: 0 0 40px hsl(185 95% 55% / 0.5), 0 0 80px hsl(185 95% 55% / 0.25);
     
     /* Animation timing */
     --transition-smooth: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
@@ -93,44 +97,48 @@
   }
 
   .light {
-    --background: 210 40% 98%;
-    --foreground: 222 47% 11%;
+    --background: 0 0% 98%;
+    --foreground: 222 50% 8%;
     
     --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
+    --card-foreground: 222 50% 8%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
+    --popover-foreground: 222 50% 8%;
     
-    --primary: 250 75% 55%;
+    --primary: 250 80% 55%;
     --primary-foreground: 0 0% 100%;
     
-    --secondary: 220 20% 94%;
-    --secondary-foreground: 222 40% 20%;
+    --secondary: 220 15% 94%;
+    --secondary-foreground: 222 45% 15%;
     
-    --muted: 220 15% 94%;
-    --muted-foreground: 222 15% 40%;
+    --muted: 220 10% 92%;
+    --muted-foreground: 222 20% 40%;
     
-    --accent: 180 75% 40%;
+    --accent: 185 85% 45%;
     --accent-foreground: 0 0% 100%;
     
     --destructive: 0 70% 50%;
     --destructive-foreground: 0 0% 100%;
     
-    --border: 220 20% 88%;
-    --input: 220 15% 92%;
-    --ring: 250 75% 55%;
+    --border: 220 15% 88%;
+    --input: 220 10% 92%;
+    --ring: 250 80% 55%;
     
-    --sidebar-background: 220 25% 97%;
-    --sidebar-foreground: 222 40% 20%;
-    --sidebar-primary: 250 75% 55%;
+    --sidebar-background: 220 20% 97%;
+    --sidebar-foreground: 222 45% 15%;
+    --sidebar-primary: 250 80% 55%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 20% 94%;
-    --sidebar-accent-foreground: 222 40% 20%;
-    --sidebar-border: 220 20% 88%;
-    --sidebar-ring: 250 75% 55%;
+    --sidebar-accent: 220 15% 94%;
+    --sidebar-accent-foreground: 222 45% 15%;
+    --sidebar-border: 220 15% 88%;
+    --sidebar-ring: 250 80% 55%;
     
-    --gnexus-surface: 220 15% 96%;
-    --gnexus-glass: 222 40% 15%;
+    --gnexus-3d-primary: 250 80% 55%;
+    --gnexus-3d-secondary: 185 85% 45%;
+    --gnexus-3d-highlight: 220 65% 50%;
+    
+    --gnexus-surface: 220 10% 96%;
+    --gnexus-glass: 222 45% 12%;
     --shadow-soft: 0 10px 50px -12px hsl(220 30% 30% / 0.18);
     --shadow-clay: 10px 10px 20px hsl(220 20% 85% / 0.6), -5px -5px 15px hsl(0 0% 100% / 0.9);
     --shadow-elevated: 0 20px 60px -15px hsl(220 30% 30% / 0.15);

@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 
 interface FloatingCubeProps {
   size?: "sm" | "md" | "lg" | "xl";
-  color?: "primary" | "accent" | "coral" | "gold" | "purple";
+  color?: "primary" | "secondary" | "highlight";
   className?: string;
   rotateSpeed?: "slow" | "medium" | "fast";
   floatIntensity?: number;
@@ -25,20 +25,26 @@ const sizePx = {
   xl: 128,
 };
 
-const colorMap = {
-  primary: "from-primary/60 to-primary/30",
-  accent: "from-accent/60 to-accent/30",
-  coral: "from-gnexus-coral/60 to-gnexus-coral/30",
-  gold: "from-gnexus-gold/60 to-gnexus-gold/30",
-  purple: "from-gnexus-purple/60 to-gnexus-purple/30",
-};
-
-const borderColorMap = {
-  primary: "border-primary/40",
-  accent: "border-accent/40",
-  coral: "border-gnexus-coral/40",
-  gold: "border-gnexus-gold/40",
-  purple: "border-gnexus-purple/40",
+// Unified luxury 3D color system
+const colorConfig = {
+  primary: {
+    gradient: "from-[hsl(250,90%,65%)] to-[hsl(250,85%,45%)]",
+    border: "border-[hsl(250,90%,65%)/0.5]",
+    glow: "0 0 30px hsl(250 90% 65% / 0.4), 0 0 60px hsl(250 90% 65% / 0.2)",
+    innerGlow: "inset 0 0 15px hsl(250 90% 65% / 0.15)",
+  },
+  secondary: {
+    gradient: "from-[hsl(185,95%,55%)] to-[hsl(185,90%,40%)]",
+    border: "border-[hsl(185,95%,55%)/0.5]",
+    glow: "0 0 30px hsl(185 95% 55% / 0.4), 0 0 60px hsl(185 95% 55% / 0.2)",
+    innerGlow: "inset 0 0 15px hsl(185 95% 55% / 0.15)",
+  },
+  highlight: {
+    gradient: "from-[hsl(220,70%,55%)] to-[hsl(220,65%,40%)]",
+    border: "border-[hsl(220,70%,55%)/0.5]",
+    glow: "0 0 30px hsl(220 70% 55% / 0.4), 0 0 60px hsl(220 70% 55% / 0.2)",
+    innerGlow: "inset 0 0 15px hsl(220 70% 55% / 0.15)",
+  },
 };
 
 const speedMap = {
@@ -61,6 +67,7 @@ export function FloatingCube({
   
   const cubeSize = sizePx[size];
   const halfSize = cubeSize / 2;
+  const colors = colorConfig[color];
 
   return (
     <motion.div
@@ -83,6 +90,7 @@ export function FloatingCube({
         className={cn(sizeMap[size], "relative preserve-3d")}
         style={{
           transformStyle: "preserve-3d",
+          filter: `drop-shadow(${colors.glow.split(',')[0]})`,
         }}
         animate={{
           rotateX: [0, 360],
@@ -98,72 +106,72 @@ export function FloatingCube({
         <div 
           className={cn(
             "absolute inset-0 bg-gradient-to-br border backdrop-blur-sm rounded-lg",
-            colorMap[color],
-            borderColorMap[color]
+            colors.gradient,
+            colors.border
           )}
           style={{
             transform: `translateZ(${halfSize}px)`,
-            boxShadow: "inset 2px 2px 6px rgba(255,255,255,0.15), inset -2px -2px 6px rgba(0,0,0,0.2)",
+            boxShadow: `inset 2px 2px 8px rgba(255,255,255,0.2), inset -2px -2px 8px rgba(0,0,0,0.3), ${colors.innerGlow}`,
           }}
         />
         {/* Back face */}
         <div 
           className={cn(
             "absolute inset-0 bg-gradient-to-br border backdrop-blur-sm rounded-lg",
-            colorMap[color],
-            borderColorMap[color]
+            colors.gradient,
+            colors.border
           )}
           style={{
             transform: `translateZ(-${halfSize}px) rotateY(180deg)`,
-            boxShadow: "inset 2px 2px 6px rgba(255,255,255,0.15), inset -2px -2px 6px rgba(0,0,0,0.2)",
+            boxShadow: `inset 2px 2px 8px rgba(255,255,255,0.15), inset -2px -2px 8px rgba(0,0,0,0.25)`,
           }}
         />
         {/* Left face */}
         <div 
           className={cn(
-            "absolute inset-0 bg-gradient-to-br border backdrop-blur-sm rounded-lg",
-            colorMap[color],
-            borderColorMap[color]
+            "absolute inset-0 bg-gradient-to-br border backdrop-blur-sm rounded-lg opacity-90",
+            colors.gradient,
+            colors.border
           )}
           style={{
             transform: `translateX(-${halfSize}px) rotateY(-90deg)`,
-            boxShadow: "inset 2px 2px 6px rgba(255,255,255,0.15), inset -2px -2px 6px rgba(0,0,0,0.2)",
+            boxShadow: `inset 2px 2px 6px rgba(255,255,255,0.1), inset -2px -2px 6px rgba(0,0,0,0.2)`,
           }}
         />
         {/* Right face */}
         <div 
           className={cn(
-            "absolute inset-0 bg-gradient-to-br border backdrop-blur-sm rounded-lg",
-            colorMap[color],
-            borderColorMap[color]
+            "absolute inset-0 bg-gradient-to-br border backdrop-blur-sm rounded-lg opacity-90",
+            colors.gradient,
+            colors.border
           )}
           style={{
             transform: `translateX(${halfSize}px) rotateY(90deg)`,
-            boxShadow: "inset 2px 2px 6px rgba(255,255,255,0.15), inset -2px -2px 6px rgba(0,0,0,0.2)",
+            boxShadow: `inset 2px 2px 6px rgba(255,255,255,0.1), inset -2px -2px 6px rgba(0,0,0,0.2)`,
           }}
         />
         {/* Top face */}
         <div 
           className={cn(
-            "absolute inset-0 bg-gradient-to-br border backdrop-blur-sm rounded-lg",
-            colorMap[color],
-            borderColorMap[color]
+            "absolute inset-0 bg-gradient-to-br border backdrop-blur-sm rounded-lg opacity-95",
+            colors.gradient,
+            colors.border
           )}
           style={{
             transform: `translateY(-${halfSize}px) rotateX(90deg)`,
-            boxShadow: "inset 2px 2px 6px rgba(255,255,255,0.25), inset -2px -2px 6px rgba(0,0,0,0.15)",
+            boxShadow: `inset 2px 2px 8px rgba(255,255,255,0.25), inset -2px -2px 6px rgba(0,0,0,0.15)`,
           }}
         />
         {/* Bottom face */}
         <div 
           className={cn(
-            "absolute inset-0 bg-gradient-to-br border backdrop-blur-sm rounded-lg",
-            colorMap[color],
-            borderColorMap[color]
+            "absolute inset-0 bg-gradient-to-br border backdrop-blur-sm rounded-lg opacity-80",
+            colors.gradient,
+            colors.border
           )}
           style={{
             transform: `translateY(${halfSize}px) rotateX(-90deg)`,
-            boxShadow: "inset 2px 2px 6px rgba(255,255,255,0.1), inset -2px -2px 6px rgba(0,0,0,0.25)",
+            boxShadow: `inset 2px 2px 4px rgba(255,255,255,0.05), inset -2px -2px 8px rgba(0,0,0,0.3)`,
           }}
         />
       </motion.div>
