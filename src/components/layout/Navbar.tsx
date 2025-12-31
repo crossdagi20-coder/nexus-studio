@@ -65,7 +65,7 @@ export function Navbar() {
                     : "text-muted-foreground hover:text-foreground"
                 )}
               >
-                {link.name}
+                <span className="relative z-10">{link.name}</span>
                 {location.pathname === link.href && (
                   <motion.div
                     layoutId="navbar-indicator"
@@ -73,7 +73,6 @@ export function Navbar() {
                     transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
                   />
                 )}
-                <span className="relative z-10">{link.name}</span>
               </Link>
             ))}
           </div>
