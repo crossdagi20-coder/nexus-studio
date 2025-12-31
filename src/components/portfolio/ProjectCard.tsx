@@ -20,11 +20,12 @@ const categoryShapes: Record<string, "cube" | "laptop" | "pyramid" | "torus"> = 
   "Social Media": "torus",
 };
 
-const categoryColors: Record<string, "primary" | "accent" | "coral" | "gold" | "purple"> = {
-  "Architecture": "gold",
-  "Web": "primary",
-  "Branding": "coral",
-  "Social Media": "accent",
+// Updated to use new unified color system
+const categoryColors: Record<string, "primary" | "secondary" | "highlight"> = {
+  "Architecture": "primary",
+  "Web": "secondary",
+  "Branding": "highlight",
+  "Social Media": "primary",
 };
 
 export function ProjectCard({

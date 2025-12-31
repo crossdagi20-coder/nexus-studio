@@ -68,16 +68,16 @@ export default function Careers() {
         {/* Floating 3D shapes */}
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-[15%] right-[10%]">
-            <FloatingCube size="lg" color="accent" rotateSpeed="slow" />
+            <FloatingCube size="lg" color="secondary" rotateSpeed="slow" />
           </div>
           <div className="absolute top-[50%] right-[5%]">
             <FloatingSphere size="md" color="primary" />
           </div>
           <div className="absolute bottom-[20%] right-[15%]">
-            <FloatingPyramid size="sm" color="gold" rotateSpeed="medium" />
+            <FloatingPyramid size="sm" color="highlight" rotateSpeed="medium" />
           </div>
           <div className="absolute bottom-[40%] left-[5%]">
-            <FloatingTorus size="md" color="coral" rotateSpeed="slow" />
+            <FloatingTorus size="md" color="primary" rotateSpeed="slow" />
           </div>
         </div>
         
@@ -104,7 +104,7 @@ export default function Careers() {
         {/* Floating shapes */}
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-[10%] right-[5%]">
-            <FloatingOctahedron size="md" color="accent" rotateSpeed="slow" />
+            <FloatingOctahedron size="md" color="secondary" rotateSpeed="slow" />
           </div>
           <div className="absolute bottom-[10%] left-[5%]">
             <FloatingSphere size="sm" color="primary" />
@@ -145,7 +145,7 @@ export default function Careers() {
             <FloatingCube size="sm" color="primary" rotateSpeed="slow" />
           </div>
           <div className="absolute bottom-[20%] right-[3%]">
-            <FloatingPyramid size="md" color="gold" rotateSpeed="medium" />
+            <FloatingPyramid size="md" color="secondary" rotateSpeed="medium" />
           </div>
         </div>
         
@@ -200,7 +200,7 @@ export default function Careers() {
             <FloatingTorus size="lg" color="primary" rotateSpeed="slow" />
           </div>
           <div className="absolute bottom-[20%] right-[10%]">
-            <FloatingSphere size="md" color="accent" />
+            <FloatingSphere size="md" color="secondary" />
           </div>
         </div>
         

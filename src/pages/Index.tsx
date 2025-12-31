@@ -97,13 +97,13 @@ export default function Index() {
             <FloatingCube size="lg" color="primary" rotateSpeed="slow" />
           </div>
           <div className="absolute top-[25%] right-[8%]">
-            <FloatingTorus size="md" color="accent" rotateSpeed="medium" />
+            <FloatingTorus size="md" color="secondary" rotateSpeed="medium" />
           </div>
           <div className="absolute bottom-[20%] left-[10%]">
-            <FloatingOctahedron size="md" color="purple" rotateSpeed="slow" />
+            <FloatingOctahedron size="md" color="highlight" rotateSpeed="slow" />
           </div>
           <div className="absolute bottom-[35%] right-[15%]">
-            <FloatingSphere size="sm" color="coral" />
+            <FloatingSphere size="sm" color="primary" />
           </div>
         </div>
         
@@ -190,7 +190,7 @@ export default function Index() {
           <FloatingSphere size="sm" color="primary" />
         </div>
         <div className="absolute top-[50%] right-[5%] -translate-y-1/2 pointer-events-none">
-          <FloatingSphere size="sm" color="accent" />
+          <FloatingSphere size="sm" color="secondary" />
         </div>
         <div className="container mx-auto">
           <CounterStats stats={stats} />
@@ -204,13 +204,13 @@ export default function Index() {
         {/* Floating shapes */}
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-[10%] left-[-2%]">
-            <FloatingPyramid size="lg" color="gold" rotateSpeed="slow" />
+            <FloatingPyramid size="lg" color="primary" rotateSpeed="slow" />
           </div>
           <div className="absolute bottom-[15%] right-[3%]">
-            <FloatingCube size="md" color="primary" rotateSpeed="medium" />
+            <FloatingCube size="md" color="secondary" rotateSpeed="medium" />
           </div>
           <div className="absolute top-[50%] right-[8%]">
-            <FloatingSphere size="sm" color="accent" />
+            <FloatingSphere size="sm" color="highlight" />
           </div>
         </div>
         
@@ -249,10 +249,10 @@ export default function Index() {
         {/* Floating shapes */}
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-[10%] right-[5%]">
-            <FloatingTorus size="sm" color="accent" rotateSpeed="slow" />
+            <FloatingTorus size="sm" color="secondary" rotateSpeed="slow" />
           </div>
           <div className="absolute bottom-[10%] left-[3%]">
-            <FloatingSphere size="md" color="coral" />
+            <FloatingSphere size="md" color="primary" />
           </div>
         </div>
         
@@ -314,10 +314,10 @@ export default function Index() {
             <FloatingTorus size="lg" color="primary" rotateSpeed="slow" />
           </div>
           <div className="absolute top-[30%] right-[15%]">
-            <FloatingSphere size="sm" color="accent" />
+            <FloatingSphere size="sm" color="secondary" />
           </div>
           <div className="absolute bottom-[25%] right-[10%]">
-            <FloatingSphere size="md" color="coral" />
+            <FloatingSphere size="md" color="highlight" />
           </div>
         </div>
         
