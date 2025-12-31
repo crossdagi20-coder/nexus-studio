@@ -13,7 +13,7 @@ import {
   Palette
 } from "lucide-react";
 import { ScrollReveal, ParallaxElement, StaggerContainer, StaggerItem, ScrollProgress } from "@/components/animations";
-import { FloatingCube, FloatingTorus, FloatingPyramid, FloatingSphere, FloatingOctahedron } from "@/components/3d";
+import ParticleField from "@/components/ui/ParticleField";
 
 const values = [
   {
@@ -62,23 +62,17 @@ export default function About() {
         <div className="absolute inset-0 grid-pattern opacity-30" />
         <ParallaxElement yOffset={[0, 100]} className="absolute top-20 right-20 w-96 h-96 bg-primary/20 rounded-full blur-[120px] pointer-events-none" />
         
-        {/* Floating 3D shapes */}
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-[15%] right-[10%]">
-            <FloatingCube size="lg" color="primary" rotateSpeed="slow" />
-          </div>
-          <div className="absolute top-[45%] right-[5%]">
-            <FloatingSphere size="md" color="secondary" />
-          </div>
-          <div className="absolute bottom-[20%] right-[15%]">
-            <FloatingOctahedron size="sm" color="highlight" rotateSpeed="medium" />
-          </div>
-          <div className="absolute bottom-[30%] left-[5%]">
-            <FloatingPyramid size="md" color="primary" rotateSpeed="slow" />
-          </div>
-        </div>
+        {/* Advanced Particle Animation */}
+        <ParticleField 
+          particleCount={150}
+          mouseInteraction={true}
+          colors={["#14b8a6", "#a855f7", "#eab308", "#06b6d4"]}
+          speed={0.4}
+          connectionDistance={100}
+          showConnections={true}
+        />
         
-        <div className="container mx-auto px-6 relative">
+        <div className="container mx-auto px-6 relative z-10">
           <ScrollReveal variant="fadeUp">
             <div className="max-w-3xl">
               <h1 className="font-serif text-5xl md:text-7xl font-bold mb-6">
@@ -96,14 +90,15 @@ export default function About() {
 
       {/* Stats */}
       <section className="py-16 bg-secondary/30 relative overflow-hidden">
-        <div className="absolute top-[50%] left-[3%] -translate-y-1/2 pointer-events-none">
-          <FloatingSphere size="sm" color="primary" />
-        </div>
-        <div className="absolute top-[50%] right-[3%] -translate-y-1/2 pointer-events-none">
-          <FloatingSphere size="sm" color="secondary" />
-        </div>
+        <ParticleField 
+          particleCount={60}
+          speed={0.2}
+          connectionDistance={80}
+          colors={["#14b8a6", "#a855f7"]}
+          className="opacity-40"
+        />
         
-        <div className="container mx-auto px-6">
+        <div className="container mx-auto px-6 relative z-10">
           <StaggerContainer className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {stats.map((stat) => (
               <StaggerItem key={stat.label} className="text-center">
@@ -119,16 +114,15 @@ export default function About() {
 
       {/* Story */}
       <section className="py-24 relative overflow-hidden">
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-[20%] right-[5%]">
-            <FloatingCube size="md" color="primary" rotateSpeed="slow" />
-          </div>
-          <div className="absolute bottom-[20%] right-[10%]">
-            <FloatingPyramid size="sm" color="secondary" rotateSpeed="medium" />
-          </div>
-        </div>
+        <ParticleField 
+          particleCount={80}
+          speed={0.25}
+          connectionDistance={90}
+          colors={["#06b6d4", "#a855f7", "#eab308"]}
+          className="opacity-30"
+        />
         
-        <div className="container mx-auto px-6">
+        <div className="container mx-auto px-6 relative z-10">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <ScrollReveal variant="slideLeft">
               <h2 className="font-serif text-4xl md:text-5xl font-bold mb-6">
@@ -171,17 +165,15 @@ export default function About() {
       <section className="py-24 bg-secondary/30 relative overflow-hidden">
         <ParallaxElement yOffset={[-50, 50]} className="absolute -bottom-20 -left-20 w-80 h-80 bg-accent/10 rounded-full blur-[100px] pointer-events-none" />
         
-        {/* Floating shapes */}
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-[10%] right-[8%]">
-            <FloatingTorus size="lg" color="primary" rotateSpeed="slow" />
-          </div>
-          <div className="absolute bottom-[15%] left-[5%]">
-            <FloatingSphere size="md" color="secondary" />
-          </div>
-        </div>
+        <ParticleField 
+          particleCount={100}
+          speed={0.3}
+          connectionDistance={100}
+          colors={["#14b8a6", "#eab308", "#a855f7"]}
+          className="opacity-35"
+        />
         
-        <div className="container mx-auto px-6 relative">
+        <div className="container mx-auto px-6 relative z-10">
           <ScrollReveal variant="fadeUp" className="text-center mb-16">
             <h2 className="font-serif text-4xl md:text-5xl font-bold mb-4">
               Our Values
@@ -209,22 +201,15 @@ export default function About() {
 
       {/* Team */}
       <section className="py-24 relative overflow-hidden">
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-[10%] left-[5%]">
-            <FloatingCube size="sm" color="primary" rotateSpeed="slow" />
-          </div>
-          <div className="absolute top-[10%] right-[5%]">
-            <FloatingCube size="sm" color="secondary" rotateSpeed="medium" />
-          </div>
-          <div className="absolute bottom-[10%] left-[8%]">
-            <FloatingSphere size="sm" color="highlight" />
-          </div>
-          <div className="absolute bottom-[10%] right-[8%]">
-            <FloatingSphere size="sm" color="primary" />
-          </div>
-        </div>
+        <ParticleField 
+          particleCount={90}
+          speed={0.2}
+          connectionDistance={110}
+          colors={["#14b8a6", "#06b6d4", "#a855f7"]}
+          className="opacity-25"
+        />
         
-        <div className="container mx-auto px-6">
+        <div className="container mx-auto px-6 relative z-10">
           <ScrollReveal variant="fadeUp" className="text-center mb-16">
             <h2 className="font-serif text-4xl md:text-5xl font-bold mb-4">
               Meet Our Team
@@ -261,16 +246,15 @@ export default function About() {
 
       {/* CTA */}
       <section className="py-24 bg-secondary/30 relative overflow-hidden">
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-[20%] left-[10%]">
-            <FloatingPyramid size="lg" color="primary" rotateSpeed="slow" />
-          </div>
-          <div className="absolute bottom-[20%] right-[10%]">
-            <FloatingSphere size="md" color="secondary" />
-          </div>
-        </div>
+        <ParticleField 
+          particleCount={120}
+          speed={0.35}
+          connectionDistance={120}
+          colors={["#14b8a6", "#a855f7", "#eab308", "#06b6d4"]}
+          className="opacity-40"
+        />
         
-        <div className="container mx-auto px-6">
+        <div className="container mx-auto px-6 relative z-10">
           <ScrollReveal variant="scaleUp" className="text-center max-w-3xl mx-auto">
             <h2 className="font-serif text-4xl md:text-5xl font-bold mb-6">
               Ready to Work Together?
