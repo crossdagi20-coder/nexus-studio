@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { motion, useScroll, useMotionValueEvent } from "framer-motion";
 import { Link, useLocation } from "react-router-dom";
 import { useState } from "react";
 import { Menu, X, ArrowRight } from "lucide-react";
@@ -7,69 +7,83 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 const navLinks = [
-  { number: "01", name: "home", href: "/" },
-  { number: "02", name: "expertise", href: "/services" },
-  { number: "03", name: "work", href: "/portfolio" },
-  { number: "04", name: "experience", href: "/about" },
-  { number: "05", name: "contact", href: "/contact" },
+  { name: "Home", href: "/" },
+  { name: "Services", href: "/services" },
+  { name: "Portfolio", href: "/portfolio" },
+  { name: "About", href: "/about" },
+  { name: "Contact", href: "/contact" },
 ];
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const { user, signOut } = useAuth();
   const location = useLocation();
+  const { scrollY } = useScroll();
+
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    setIsScrolled(latest > 50);
+  });
 
   return (
     <motion.header
       initial={{ y: -100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-      className="fixed top-0 left-0 right-0 z-50"
+      className={cn(
+        "fixed top-0 left-0 right-0 z-50 transition-all duration-500",
+        isScrolled && "glass-nav"
+      )}
     >
-      <nav className="container mx-auto px-6 py-6">
+      <nav className="container mx-auto px-6 py-5">
         <div className="flex items-center justify-between">
-          {/* Logo - Monospace style with cursor */}
-          <Link to="/" className="group flex items-center gap-2">
-            <span className="font-mono text-sm text-primary tracking-wide">
-              Gnexus
-            </span>
-            <motion.span
-              animate={{ opacity: [1, 0] }}
-              transition={{ duration: 0.8, repeat: Infinity, repeatType: "reverse" }}
-              className="text-primary font-mono"
+          {/* Logo with aurora glow on hover */}
+          <Link to="/" className="group relative flex items-center gap-2">
+            <motion.div
+              className="relative"
+              whileHover={{ scale: 1.05 }}
+              transition={{ duration: 0.3 }}
             >
-              ._
-            </motion.span>
+              <span className="font-display font-bold text-xl tracking-tight group-hover:aurora-text transition-all duration-300">
+                GNEXUS
+              </span>
+              {/* Aurora glow effect on hover */}
+              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 blur-xl bg-gradient-to-r from-primary via-accent to-primary -z-10 transition-opacity duration-500" />
+            </motion.div>
           </Link>
 
-          {/* Desktop Navigation - Numbered monospace links */}
-          <div className="hidden md:flex items-center gap-8">
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center gap-1">
             {navLinks.map((link) => (
               <Link
                 key={link.name}
                 to={link.href}
                 className={cn(
-                  "group flex items-center gap-2 font-mono text-xs tracking-wide transition-colors duration-300",
+                  "relative px-4 py-2 text-sm font-medium transition-colors duration-300 rounded-full",
                   location.pathname === link.href
-                    ? "text-foreground"
+                    ? "text-primary"
                     : "text-muted-foreground hover:text-foreground"
                 )}
               >
-                <span className="text-primary/50 text-[10px]">{link.number}</span>
-                <span className="flex items-center gap-1">
-                  <span className="text-primary/70">//</span>
-                  {link.name}
-                </span>
+                {link.name}
+                {location.pathname === link.href && (
+                  <motion.div
+                    layoutId="navbar-indicator"
+                    className="absolute inset-0 bg-primary/10 rounded-full border border-primary/20"
+                    transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                  />
+                )}
+                <span className="relative z-10">{link.name}</span>
               </Link>
             ))}
           </div>
 
           {/* Auth Buttons */}
-          <div className="hidden md:flex items-center gap-4">
+          <div className="hidden md:flex items-center gap-3">
             {user ? (
               <>
                 <Link to="/dashboard">
-                  <Button variant="ghost" size="sm" className="font-mono text-xs tracking-wide">
+                  <Button variant="ghost" size="sm" className="text-sm">
                     Dashboard
                   </Button>
                 </Link>
@@ -77,7 +91,7 @@ export function Navbar() {
                   variant="ghost" 
                   size="sm"
                   onClick={() => signOut()}
-                  className="font-mono text-xs tracking-wide text-muted-foreground"
+                  className="text-sm text-muted-foreground"
                 >
                   Sign Out
                 </Button>
@@ -86,10 +100,10 @@ export function Navbar() {
               <Link to="/auth?mode=signup">
                 <Button 
                   size="sm" 
-                  className="group font-mono text-xs rounded-full px-5 bg-primary text-primary-foreground hover:bg-primary/90 transition-all duration-300"
+                  className="group rounded-full px-6 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground hover:shadow-lg hover:shadow-primary/25 transition-all duration-300"
                 >
                   <span>Start Project</span>
-                  <ArrowRight className="ml-2 w-3 h-3 transition-transform group-hover:translate-x-1" />
+                  <ArrowRight className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
                 </Button>
               </Link>
             )}
@@ -98,50 +112,72 @@ export function Navbar() {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden p-2 text-foreground"
+            className="md:hidden p-2 text-foreground hover:text-primary transition-colors"
           >
             {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
         </div>
 
-        {/* Mobile Navigation */}
+        {/* Mobile Navigation - Full screen overlay */}
         <motion.div
           initial={false}
-          animate={{ height: isOpen ? "auto" : 0, opacity: isOpen ? 1 : 0 }}
+          animate={{ 
+            opacity: isOpen ? 1 : 0,
+            pointerEvents: isOpen ? "auto" : "none"
+          }}
           transition={{ duration: 0.3 }}
-          className="md:hidden overflow-hidden"
+          className="fixed inset-0 top-[72px] bg-background/98 backdrop-blur-xl md:hidden"
         >
-          <div className="py-8 space-y-4">
-            {navLinks.map((link) => (
-              <Link
-                key={link.name}
-                to={link.href}
-                onClick={() => setIsOpen(false)}
-                className={cn(
-                  "flex items-center gap-3 font-mono text-lg transition-colors",
-                  location.pathname === link.href
-                    ? "text-foreground"
-                    : "text-muted-foreground hover:text-foreground"
-                )}
-              >
-                <span className="text-primary/50 text-sm">{link.number}</span>
-                <span className="flex items-center gap-2">
-                  <span className="text-primary/70">//</span>
-                  {link.name}
-                </span>
-              </Link>
-            ))}
-            <div className="pt-6 border-t border-border/30 space-y-4">
+          <div className="container mx-auto px-6 py-12">
+            <div className="space-y-2">
+              {navLinks.map((link, index) => (
+                <motion.div
+                  key={link.name}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ 
+                    opacity: isOpen ? 1 : 0, 
+                    x: isOpen ? 0 : -20 
+                  }}
+                  transition={{ delay: index * 0.1 }}
+                >
+                  <Link
+                    to={link.href}
+                    onClick={() => setIsOpen(false)}
+                    className={cn(
+                      "flex items-center py-4 text-3xl font-display font-bold transition-colors border-b border-border/20",
+                      location.pathname === link.href
+                        ? "text-primary"
+                        : "text-foreground hover:text-primary"
+                    )}
+                  >
+                    {link.name}
+                    {location.pathname === link.href && (
+                      <div className="ml-4 w-2 h-2 rounded-full bg-primary" />
+                    )}
+                  </Link>
+                </motion.div>
+              ))}
+            </div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ 
+                opacity: isOpen ? 1 : 0, 
+                y: isOpen ? 0 : 20 
+              }}
+              transition={{ delay: 0.4 }}
+              className="pt-8 space-y-4"
+            >
               {user ? (
                 <>
                   <Link to="/dashboard" onClick={() => setIsOpen(false)}>
-                    <Button variant="ghost" className="w-full justify-start font-mono">
+                    <Button variant="outline" className="w-full justify-center rounded-full">
                       Dashboard
                     </Button>
                   </Link>
                   <Button 
                     variant="ghost" 
-                    className="w-full justify-start font-mono text-muted-foreground"
+                    className="w-full justify-center text-muted-foreground"
                     onClick={() => {
                       signOut();
                       setIsOpen(false);
@@ -152,13 +188,13 @@ export function Navbar() {
                 </>
               ) : (
                 <Link to="/auth?mode=signup" onClick={() => setIsOpen(false)}>
-                  <Button className="w-full rounded-full bg-primary text-primary-foreground">
+                  <Button className="w-full rounded-full bg-gradient-to-r from-primary to-primary/80 text-primary-foreground">
                     Start Project
                     <ArrowRight className="ml-2 w-4 h-4" />
                   </Button>
                 </Link>
               )}
-            </div>
+            </motion.div>
           </div>
         </motion.div>
       </nav>
