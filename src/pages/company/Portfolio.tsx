@@ -2,76 +2,46 @@ import { motion } from "framer-motion";
 import { PublicLayout } from "@/components/layout/PublicLayout";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { 
-  ExternalLink,
-  Building2,
-  Globe,
-  Share2,
-  Palette
-} from "lucide-react";
+import { ExternalLink } from "lucide-react";
+import { usePortfolio } from "@/hooks/usePortfolio";
+import { HorizontalGallery } from "@/components/portfolio";
+import { ScrollProgress, TextReveal, ScrollReveal, ParallaxElement } from "@/components/animations";
+import { FloatingCube, FloatingTorus, FloatingPyramid, FloatingSphere } from "@/components/3d";
 
 const categories = ["All", "Architecture", "Web", "Branding", "Social Media"];
 
-const projects = [
-  {
-    title: "Modern Villa Visualization",
-    category: "Architecture",
-    description: "Photorealistic renders for a luxury residential project",
-    icon: Building2
-  },
-  {
-    title: "E-Commerce Platform",
-    category: "Web",
-    description: "Full-stack online store with custom CMS",
-    icon: Globe
-  },
-  {
-    title: "Tech Startup Rebrand",
-    category: "Branding",
-    description: "Complete brand identity overhaul",
-    icon: Palette
-  },
-  {
-    title: "Product Launch Campaign",
-    category: "Social Media",
-    description: "Multi-platform social campaign",
-    icon: Share2
-  },
-  {
-    title: "Corporate HQ Interior",
-    category: "Architecture",
-    description: "Interior visualization for tech company",
-    icon: Building2
-  },
-  {
-    title: "SaaS Dashboard",
-    category: "Web",
-    description: "Analytics platform with real-time data",
-    icon: Globe
-  },
-  {
-    title: "Restaurant Identity",
-    category: "Branding",
-    description: "Logo, menu design, and signage",
-    icon: Palette
-  },
-  {
-    title: "Influencer Collaboration",
-    category: "Social Media",
-    description: "Content strategy and management",
-    icon: Share2
-  }
-];
-
 export default function Portfolio() {
+  const { data: portfolioItems, isLoading } = usePortfolio();
+  
+  // Filter only visible items
+  const visibleItems = portfolioItems?.filter(item => item.is_visible) || [];
+
   return (
     <PublicLayout>
+      <ScrollProgress />
+      
       {/* Hero */}
-      <section className="relative min-h-[50vh] flex items-center">
+      <section className="relative min-h-[50vh] flex items-center overflow-hidden">
         <div className="absolute inset-0 grid-pattern opacity-30" />
-        <div className="absolute top-20 left-20 w-96 h-96 bg-primary/20 rounded-full blur-[120px]" />
+        <ParallaxElement yOffset={[0, 100]} className="absolute top-20 left-20 w-96 h-96 bg-primary/20 rounded-full blur-[120px] pointer-events-none" />
         
-        <div className="container mx-auto px-6 relative">
+        {/* Floating 3D shapes */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-[15%] right-[10%]">
+            <FloatingCube size="lg" color="primary" rotateSpeed="slow" />
+          </div>
+          <div className="absolute bottom-[20%] left-[5%]">
+            <FloatingTorus size="md" color="accent" rotateSpeed="medium" />
+          </div>
+          <div className="absolute top-[40%] right-[25%]">
+            <FloatingSphere size="sm" color="coral" />
+          </div>
+          <div className="absolute bottom-[30%] right-[15%]">
+            <FloatingPyramid size="md" color="gold" rotateSpeed="slow" />
+          </div>
+        </div>
+        
+        <div className="container mx-auto px-6 relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -112,42 +82,23 @@ export default function Portfolio() {
         </div>
       </section>
 
-      {/* Projects Grid */}
-      <section className="py-16">
-        <div className="container mx-auto px-6">
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {projects.map((project, index) => (
-              <motion.div
-                key={project.title}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.05 }}
-                className="glass-card overflow-hidden group cursor-pointer"
-              >
-                <div className="aspect-[4/3] bg-secondary/50 flex items-center justify-center group-hover:bg-primary/10 transition-colors">
-                  <project.icon className="w-16 h-16 text-muted-foreground group-hover:text-primary group-hover:scale-110 transition-all" />
-                </div>
-                <div className="p-5">
-                  <div className="text-xs text-primary font-medium mb-2">{project.category}</div>
-                  <h3 className="font-semibold mb-1 group-hover:text-primary transition-colors">{project.title}</h3>
-                  <p className="text-sm text-muted-foreground">{project.description}</p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
+      {/* Horizontal Gallery */}
+      {isLoading ? (
+        <div className="py-32 text-center">
+          <div className="animate-pulse text-muted-foreground">Loading projects...</div>
         </div>
-      </section>
+      ) : (
+        <HorizontalGallery items={visibleItems} />
+      )}
 
       {/* CTA */}
-      <section className="py-24 bg-secondary/30">
+      <section className="py-24 bg-secondary/30 relative overflow-hidden">
+        <ParallaxElement yOffset={[-50, 50]} className="absolute top-10 right-10 pointer-events-none">
+          <FloatingCube size="lg" color="purple" rotateSpeed="slow" />
+        </ParallaxElement>
+        
         <div className="container mx-auto px-6">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center max-w-3xl mx-auto"
-          >
+          <ScrollReveal variant="scaleUp" className="text-center max-w-3xl mx-auto">
             <h2 className="font-serif text-4xl md:text-5xl font-bold mb-6">
               Want to Be Our Next Success Story?
             </h2>
@@ -159,7 +110,7 @@ export default function Portfolio() {
                 Start Your Project <ExternalLink className="w-4 h-4" />
               </Button>
             </Link>
-          </motion.div>
+          </ScrollReveal>
         </div>
       </section>
     </PublicLayout>
