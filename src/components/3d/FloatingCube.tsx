@@ -25,25 +25,25 @@ const sizePx = {
   xl: 128,
 };
 
-// Unified luxury 3D color system
+// Warm amber + cool blue-gray color system (inspired by tamalsen.dev)
 const colorConfig = {
   primary: {
-    gradient: "from-[hsl(250,90%,65%)] to-[hsl(250,85%,45%)]",
-    border: "border-[hsl(250,90%,65%)/0.5]",
-    glow: "0 0 30px hsl(250 90% 65% / 0.4), 0 0 60px hsl(250 90% 65% / 0.2)",
-    innerGlow: "inset 0 0 15px hsl(250 90% 65% / 0.15)",
+    gradient: "from-[hsl(25,90%,50%)] to-[hsl(20,85%,35%)]",
+    border: "border-[hsl(25,90%,50%)/0.5]",
+    glow: "0 0 30px hsl(25 90% 50% / 0.5), 0 0 60px hsl(25 90% 50% / 0.25)",
+    innerGlow: "inset 0 0 15px hsl(25 90% 50% / 0.2)",
   },
   secondary: {
-    gradient: "from-[hsl(185,95%,55%)] to-[hsl(185,90%,40%)]",
-    border: "border-[hsl(185,95%,55%)/0.5]",
-    glow: "0 0 30px hsl(185 95% 55% / 0.4), 0 0 60px hsl(185 95% 55% / 0.2)",
-    innerGlow: "inset 0 0 15px hsl(185 95% 55% / 0.15)",
+    gradient: "from-[hsl(220,40%,35%)] to-[hsl(220,45%,20%)]",
+    border: "border-[hsl(220,40%,35%)/0.4]",
+    glow: "0 0 20px hsl(220 40% 35% / 0.3), 0 0 40px hsl(220 40% 35% / 0.15)",
+    innerGlow: "inset 0 0 15px hsl(220 40% 35% / 0.15)",
   },
   highlight: {
-    gradient: "from-[hsl(220,70%,55%)] to-[hsl(220,65%,40%)]",
-    border: "border-[hsl(220,70%,55%)/0.5]",
-    glow: "0 0 30px hsl(220 70% 55% / 0.4), 0 0 60px hsl(220 70% 55% / 0.2)",
-    innerGlow: "inset 0 0 15px hsl(220 70% 55% / 0.15)",
+    gradient: "from-[hsl(185,80%,50%)] to-[hsl(185,75%,35%)]",
+    border: "border-[hsl(185,80%,50%)/0.5]",
+    glow: "0 0 25px hsl(185 80% 50% / 0.4), 0 0 50px hsl(185 80% 50% / 0.2)",
+    innerGlow: "inset 0 0 15px hsl(185 80% 50% / 0.15)",
   },
 };
 

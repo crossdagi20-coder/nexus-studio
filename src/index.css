@@ -12,83 +12,83 @@
 
 @layer base {
   :root {
-    /* Core backgrounds - Deep graphite (near black with blue tint) */
-    --background: 222 50% 3%;
-    --foreground: 0 0% 96%;
+    /* Core backgrounds - Deep atmospheric blue-black (inspired by tamalsen.dev) */
+    --background: 220 45% 6%;
+    --foreground: 0 0% 94%;
     
     /* Surfaces - Subtle elevation layers */
-    --card: 222 45% 6%;
-    --card-foreground: 0 0% 96%;
-    --popover: 222 40% 8%;
-    --popover-foreground: 0 0% 96%;
+    --card: 220 40% 9%;
+    --card-foreground: 0 0% 94%;
+    --popover: 220 38% 11%;
+    --popover-foreground: 0 0% 94%;
     
-    /* Primary - Neon Violet-Blue (main glow) */
-    --primary: 250 90% 65%;
-    --primary-foreground: 0 0% 98%;
+    /* Primary - Warm Amber/Orange (main accent like inspiration) */
+    --primary: 25 95% 55%;
+    --primary-foreground: 220 45% 6%;
     
     /* Secondary - Deep charcoal surface */
-    --secondary: 222 35% 10%;
-    --secondary-foreground: 0 0% 90%;
+    --secondary: 220 35% 12%;
+    --secondary-foreground: 0 0% 88%;
     
     /* Muted surfaces */
-    --muted: 222 30% 8%;
-    --muted-foreground: 222 15% 50%;
+    --muted: 220 30% 10%;
+    --muted-foreground: 220 15% 55%;
     
     /* Accent - Electric Cyan (secondary glow) */
-    --accent: 185 95% 55%;
-    --accent-foreground: 222 50% 3%;
+    --accent: 185 90% 50%;
+    --accent-foreground: 220 45% 6%;
     
     /* Destructive */
     --destructive: 0 75% 55%;
     --destructive-foreground: 0 0% 98%;
     
     /* Borders and inputs */
-    --border: 222 25% 12%;
-    --input: 222 30% 10%;
-    --ring: 250 90% 65%;
+    --border: 220 25% 15%;
+    --input: 220 30% 12%;
+    --ring: 25 95% 55%;
     
     /* Radius */
     --radius: 0.75rem;
     
     /* Sidebar */
-    --sidebar-background: 222 50% 4%;
-    --sidebar-foreground: 0 0% 90%;
-    --sidebar-primary: 250 90% 65%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 222 35% 8%;
-    --sidebar-accent-foreground: 0 0% 96%;
-    --sidebar-border: 222 25% 10%;
-    --sidebar-ring: 250 90% 65%;
+    --sidebar-background: 220 45% 5%;
+    --sidebar-foreground: 0 0% 88%;
+    --sidebar-primary: 25 95% 55%;
+    --sidebar-primary-foreground: 220 45% 6%;
+    --sidebar-accent: 220 35% 10%;
+    --sidebar-accent-foreground: 0 0% 94%;
+    --sidebar-border: 220 25% 12%;
+    --sidebar-ring: 25 95% 55%;
     
-    /* Luxury 3D Color System - Consistent across all shapes */
-    --gnexus-3d-primary: 250 90% 65%;     /* Neon Violet - Main shapes */
-    --gnexus-3d-secondary: 185 95% 55%;   /* Electric Cyan - Accent shapes */
-    --gnexus-3d-highlight: 220 70% 55%;   /* Deep Blue - Detail shapes */
+    /* Luxury 3D Color System - Warm amber with cool blue-gray */
+    --gnexus-3d-primary: 25 90% 50%;       /* Warm Amber - Main shapes */
+    --gnexus-3d-secondary: 220 40% 35%;    /* Cool Blue-Gray - Secondary shapes */
+    --gnexus-3d-highlight: 185 80% 50%;    /* Electric Cyan - Detail shapes */
     
     /* Custom tokens */
-    --gnexus-glow: 250 90% 65%;
-    --gnexus-neon: 185 95% 55%;
-    --gnexus-surface: 222 40% 7%;
-    --gnexus-glass: 0 0% 98%;
+    --gnexus-glow: 25 95% 55%;
+    --gnexus-neon: 185 90% 50%;
+    --gnexus-surface: 220 40% 8%;
+    --gnexus-glass: 0 0% 96%;
     --gnexus-success: 150 80% 45%;
     --gnexus-warning: 35 95% 55%;
     
-    /* Gradients - Violet to Cyan luxury flow */
-    --gradient-primary: linear-gradient(135deg, hsl(250, 90%, 65%), hsl(220, 85%, 60%), hsl(185, 95%, 55%));
-    --gradient-accent: linear-gradient(135deg, hsl(185, 95%, 55%), hsl(200, 90%, 50%), hsl(220, 70%, 55%));
-    --gradient-dark: linear-gradient(180deg, hsl(222, 50%, 5%), hsl(222, 55%, 2%));
-    --gradient-surface: linear-gradient(145deg, hsl(222, 40%, 8%), hsl(222, 45%, 5%));
-    --gradient-glow: radial-gradient(ellipse at center, hsl(250, 90%, 65%, 0.2), transparent 70%);
-    --gradient-neon: linear-gradient(135deg, hsl(250, 90%, 65%), hsl(185, 95%, 55%));
+    /* Gradients - Warm amber glow */
+    --gradient-primary: linear-gradient(135deg, hsl(25, 95%, 55%), hsl(35, 90%, 50%), hsl(20, 85%, 45%));
+    --gradient-accent: linear-gradient(135deg, hsl(185, 90%, 50%), hsl(200, 85%, 45%), hsl(220, 70%, 50%));
+    --gradient-dark: linear-gradient(180deg, hsl(220, 45%, 8%), hsl(220, 50%, 4%));
+    --gradient-surface: linear-gradient(145deg, hsl(220, 40%, 10%), hsl(220, 45%, 6%));
+    --gradient-glow: radial-gradient(ellipse at center, hsl(25, 95%, 55%, 0.25), transparent 70%);
+    --gradient-neon: linear-gradient(135deg, hsl(25, 95%, 55%), hsl(185, 90%, 50%));
     
-    /* Shadows - Neon glow depth */
-    --shadow-glow: 0 0 60px hsl(250 90% 65% / 0.4), 0 0 120px hsl(185 95% 55% / 0.15);
-    --shadow-soft: 0 10px 50px -12px hsl(0 0% 0% / 0.7);
-    --shadow-clay: 10px 10px 20px hsl(0 0% 0% / 0.5), -5px -5px 15px hsl(222 30% 15% / 0.2);
-    --shadow-elevated: 0 25px 80px -20px hsl(0 0% 0% / 0.6), 0 0 50px hsl(250 90% 65% / 0.1);
-    --shadow-inset: inset 0 2px 4px hsl(0 0% 0% / 0.4);
-    --shadow-neon-primary: 0 0 40px hsl(250 90% 65% / 0.5), 0 0 80px hsl(250 90% 65% / 0.25);
-    --shadow-neon-secondary: 0 0 40px hsl(185 95% 55% / 0.5), 0 0 80px hsl(185 95% 55% / 0.25);
+    /* Shadows - Warm amber glow depth */
+    --shadow-glow: 0 0 60px hsl(25 95% 55% / 0.35), 0 0 120px hsl(25 95% 55% / 0.15);
+    --shadow-soft: 0 10px 50px -12px hsl(0 0% 0% / 0.8);
+    --shadow-clay: 10px 10px 20px hsl(0 0% 0% / 0.6), -5px -5px 15px hsl(220 30% 18% / 0.2);
+    --shadow-elevated: 0 25px 80px -20px hsl(0 0% 0% / 0.7), 0 0 50px hsl(25 95% 55% / 0.1);
+    --shadow-inset: inset 0 2px 4px hsl(0 0% 0% / 0.5);
+    --shadow-neon-primary: 0 0 40px hsl(25 95% 55% / 0.5), 0 0 80px hsl(25 95% 55% / 0.25);
+    --shadow-neon-secondary: 0 0 40px hsl(185 90% 50% / 0.4), 0 0 80px hsl(185 90% 50% / 0.2);
     
     /* Animation timing */
     --transition-smooth: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);

@@ -17,34 +17,34 @@ const sizeMap = {
   xl: 128,
 };
 
-// Unified luxury 3D color system
+// Warm amber + cool blue-gray color system (inspired by tamalsen.dev)
 const colorConfig = {
   primary: {
-    cssVar: "250, 90%, 65%",
-    face1: "hsl(250, 90%, 65% / 0.7)",
-    face2: "hsl(250, 85%, 55% / 0.6)",
-    face3: "hsl(250, 80%, 45% / 0.5)",
-    face4: "hsl(250, 85%, 50% / 0.55)",
-    border: "border-[hsl(250,90%,65%)/0.4]",
-    glow: "0 0 30px hsl(250 90% 65% / 0.4)",
+    cssVar: "25, 90%, 50%",
+    face1: "hsl(25, 90%, 55% / 0.75)",
+    face2: "hsl(25, 85%, 45% / 0.65)",
+    face3: "hsl(20, 80%, 35% / 0.55)",
+    face4: "hsl(25, 85%, 40% / 0.6)",
+    border: "border-[hsl(25,90%,50%)/0.4]",
+    glow: "0 0 30px hsl(25 90% 50% / 0.5)",
   },
   secondary: {
-    cssVar: "185, 95%, 55%",
-    face1: "hsl(185, 95%, 55% / 0.7)",
-    face2: "hsl(185, 90%, 50% / 0.6)",
-    face3: "hsl(185, 85%, 40% / 0.5)",
-    face4: "hsl(185, 90%, 45% / 0.55)",
-    border: "border-[hsl(185,95%,55%)/0.4]",
-    glow: "0 0 30px hsl(185 95% 55% / 0.4)",
+    cssVar: "220, 40%, 35%",
+    face1: "hsl(220, 40%, 40% / 0.7)",
+    face2: "hsl(220, 38%, 32% / 0.6)",
+    face3: "hsl(220, 35%, 25% / 0.5)",
+    face4: "hsl(220, 38%, 28% / 0.55)",
+    border: "border-[hsl(220,40%,35%)/0.3]",
+    glow: "0 0 20px hsl(220 40% 35% / 0.3)",
   },
   highlight: {
-    cssVar: "220, 70%, 55%",
-    face1: "hsl(220, 70%, 55% / 0.7)",
-    face2: "hsl(220, 65%, 50% / 0.6)",
-    face3: "hsl(220, 60%, 40% / 0.5)",
-    face4: "hsl(220, 65%, 45% / 0.55)",
-    border: "border-[hsl(220,70%,55%)/0.4]",
-    glow: "0 0 30px hsl(220 70% 55% / 0.4)",
+    cssVar: "185, 80%, 50%",
+    face1: "hsl(185, 80%, 55% / 0.7)",
+    face2: "hsl(185, 75%, 45% / 0.6)",
+    face3: "hsl(185, 70%, 35% / 0.5)",
+    face4: "hsl(185, 75%, 40% / 0.55)",
+    border: "border-[hsl(185,80%,50%)/0.4]",
+    glow: "0 0 25px hsl(185 80% 50% / 0.4)",
   },
 };
 
