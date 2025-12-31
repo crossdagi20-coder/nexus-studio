@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 
 interface FloatingOctahedronProps {
   size?: "sm" | "md" | "lg";
-  color?: "primary" | "accent" | "coral" | "gold" | "purple";
+  color?: "primary" | "secondary" | "highlight";
   className?: string;
   rotateSpeed?: "slow" | "medium" | "fast";
   floatIntensity?: number;
@@ -16,12 +16,20 @@ const sizeMap = {
   lg: 100,
 };
 
-const colorVars = {
-  primary: "--primary",
-  accent: "--accent",
-  coral: "--gnexus-coral",
-  gold: "--gnexus-gold",
-  purple: "--gnexus-purple",
+// Unified luxury 3D color system
+const colorConfig = {
+  primary: {
+    hsl: "250, 90%, 65%",
+    glow: "0 0 30px hsl(250 90% 65% / 0.4)",
+  },
+  secondary: {
+    hsl: "185, 95%, 55%",
+    glow: "0 0 30px hsl(185 95% 55% / 0.4)",
+  },
+  highlight: {
+    hsl: "220, 70%, 55%",
+    glow: "0 0 30px hsl(220 70% 55% / 0.4)",
+  },
 };
 
 const speedMap = {
@@ -42,7 +50,7 @@ export function FloatingOctahedron({
   const parallaxY = useTransform(scrollYProgress, [0, 1], [0, parallax ? 70 : 0]);
   
   const octaSize = sizeMap[size];
-  const colorVar = colorVars[color];
+  const colors = colorConfig[color];
 
   // Create 8 triangular faces for octahedron
   const topFaces = [0, 90, 180, 270];
@@ -56,6 +64,7 @@ export function FloatingOctahedron({
         perspective: "1000px",
         width: octaSize,
         height: octaSize * 1.4,
+        filter: `drop-shadow(${colors.glow})`,
       }}
       animate={{
         y: [0, -floatIntensity, 0],
@@ -99,10 +108,10 @@ export function FloatingOctahedron({
               borderLeft: `${octaSize / 2}px solid transparent`,
               borderRight: `${octaSize / 2}px solid transparent`,
               borderBottom: `${octaSize * 0.7}px solid`,
-              borderBottomColor: `hsl(var(${colorVar}) / ${0.6 - i * 0.1})`,
+              borderBottomColor: `hsl(${colors.hsl} / ${0.7 - i * 0.1})`,
               transformOrigin: "bottom center",
               transform: `rotateY(${angle}deg) rotateX(-45deg) translateZ(${octaSize / 2.8}px)`,
-              filter: "drop-shadow(0 0 6px rgba(255,255,255,0.1))",
+              filter: "drop-shadow(0 0 8px rgba(255,255,255,0.15))",
             }}
           />
         ))}
@@ -118,7 +127,7 @@ export function FloatingOctahedron({
               borderLeft: `${octaSize / 2}px solid transparent`,
               borderRight: `${octaSize / 2}px solid transparent`,
               borderTop: `${octaSize * 0.7}px solid`,
-              borderTopColor: `hsl(var(${colorVar}) / ${0.4 - i * 0.05})`,
+              borderTopColor: `hsl(${colors.hsl} / ${0.5 - i * 0.08})`,
               transformOrigin: "top center",
               transform: `rotateY(${angle}deg) rotateX(45deg) translateZ(${octaSize / 2.8}px)`,
             }}

@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 
 interface FloatingPyramidProps {
   size?: "sm" | "md" | "lg" | "xl";
-  color?: "primary" | "accent" | "coral" | "gold" | "purple";
+  color?: "primary" | "secondary" | "highlight";
   className?: string;
   rotateSpeed?: "slow" | "medium" | "fast";
   floatIntensity?: number;
@@ -17,41 +17,34 @@ const sizeMap = {
   xl: 128,
 };
 
-const colorMap = {
+// Unified luxury 3D color system
+const colorConfig = {
   primary: {
-    face1: "from-primary/70 to-primary/40",
-    face2: "from-primary/60 to-primary/30",
-    face3: "from-primary/50 to-primary/20",
-    face4: "from-primary/55 to-primary/25",
-    border: "border-primary/40",
+    cssVar: "250, 90%, 65%",
+    face1: "hsl(250, 90%, 65% / 0.7)",
+    face2: "hsl(250, 85%, 55% / 0.6)",
+    face3: "hsl(250, 80%, 45% / 0.5)",
+    face4: "hsl(250, 85%, 50% / 0.55)",
+    border: "border-[hsl(250,90%,65%)/0.4]",
+    glow: "0 0 30px hsl(250 90% 65% / 0.4)",
   },
-  accent: {
-    face1: "from-accent/70 to-accent/40",
-    face2: "from-accent/60 to-accent/30",
-    face3: "from-accent/50 to-accent/20",
-    face4: "from-accent/55 to-accent/25",
-    border: "border-accent/40",
+  secondary: {
+    cssVar: "185, 95%, 55%",
+    face1: "hsl(185, 95%, 55% / 0.7)",
+    face2: "hsl(185, 90%, 50% / 0.6)",
+    face3: "hsl(185, 85%, 40% / 0.5)",
+    face4: "hsl(185, 90%, 45% / 0.55)",
+    border: "border-[hsl(185,95%,55%)/0.4]",
+    glow: "0 0 30px hsl(185 95% 55% / 0.4)",
   },
-  coral: {
-    face1: "from-gnexus-coral/70 to-gnexus-coral/40",
-    face2: "from-gnexus-coral/60 to-gnexus-coral/30",
-    face3: "from-gnexus-coral/50 to-gnexus-coral/20",
-    face4: "from-gnexus-coral/55 to-gnexus-coral/25",
-    border: "border-gnexus-coral/40",
-  },
-  gold: {
-    face1: "from-gnexus-gold/70 to-gnexus-gold/40",
-    face2: "from-gnexus-gold/60 to-gnexus-gold/30",
-    face3: "from-gnexus-gold/50 to-gnexus-gold/20",
-    face4: "from-gnexus-gold/55 to-gnexus-gold/25",
-    border: "border-gnexus-gold/40",
-  },
-  purple: {
-    face1: "from-gnexus-purple/70 to-gnexus-purple/40",
-    face2: "from-gnexus-purple/60 to-gnexus-purple/30",
-    face3: "from-gnexus-purple/50 to-gnexus-purple/20",
-    face4: "from-gnexus-purple/55 to-gnexus-purple/25",
-    border: "border-gnexus-purple/40",
+  highlight: {
+    cssVar: "220, 70%, 55%",
+    face1: "hsl(220, 70%, 55% / 0.7)",
+    face2: "hsl(220, 65%, 50% / 0.6)",
+    face3: "hsl(220, 60%, 40% / 0.5)",
+    face4: "hsl(220, 65%, 45% / 0.55)",
+    border: "border-[hsl(220,70%,55%)/0.4]",
+    glow: "0 0 30px hsl(220 70% 55% / 0.4)",
   },
 };
 
@@ -73,7 +66,7 @@ export function FloatingPyramid({
   const parallaxY = useTransform(scrollYProgress, [0, 1], [0, parallax ? 60 : 0]);
   
   const pyramidSize = sizeMap[size];
-  const colors = colorMap[color];
+  const colors = colorConfig[color];
 
   return (
     <motion.div
@@ -83,6 +76,7 @@ export function FloatingPyramid({
         perspective: "1000px",
         width: pyramidSize,
         height: pyramidSize,
+        filter: `drop-shadow(${colors.glow})`,
       }}
       animate={{
         y: [0, -floatIntensity, 0],
@@ -110,53 +104,42 @@ export function FloatingPyramid({
       >
         {/* Base */}
         <div
-          className={cn(
-            "absolute bg-gradient-to-br border backdrop-blur-sm",
-            colors.face1,
-            colors.border
-          )}
+          className={cn("absolute border backdrop-blur-sm", colors.border)}
           style={{
             width: pyramidSize,
             height: pyramidSize,
+            background: `linear-gradient(135deg, ${colors.face1}, ${colors.face2})`,
             transform: `rotateX(90deg) translateZ(-${pyramidSize / 2}px)`,
-            boxShadow: "inset 0 0 10px rgba(255,255,255,0.1)",
+            boxShadow: "inset 0 0 15px rgba(255,255,255,0.1)",
           }}
         />
         
         {/* Front face */}
         <div
-          className={cn(
-            "absolute border backdrop-blur-sm",
-            colors.border
-          )}
+          className={cn("absolute border backdrop-blur-sm", colors.border)}
           style={{
             width: 0,
             height: 0,
             borderLeft: `${pyramidSize / 2}px solid transparent`,
             borderRight: `${pyramidSize / 2}px solid transparent`,
-            borderBottom: `${pyramidSize}px solid`,
-            borderBottomColor: `hsl(var(--${color === 'primary' ? 'primary' : color === 'accent' ? 'accent' : `gnexus-${color}`}) / 0.5)`,
+            borderBottom: `${pyramidSize}px solid ${colors.face1}`,
             left: 0,
             bottom: 0,
             transformOrigin: "bottom center",
             transform: `rotateX(-30deg) translateZ(${pyramidSize / 4}px)`,
-            filter: "drop-shadow(0 0 8px rgba(255,255,255,0.1))",
+            filter: "drop-shadow(0 0 10px rgba(255,255,255,0.15))",
           }}
         />
         
         {/* Back face */}
         <div
-          className={cn(
-            "absolute border backdrop-blur-sm",
-            colors.border
-          )}
+          className={cn("absolute border backdrop-blur-sm", colors.border)}
           style={{
             width: 0,
             height: 0,
             borderLeft: `${pyramidSize / 2}px solid transparent`,
             borderRight: `${pyramidSize / 2}px solid transparent`,
-            borderBottom: `${pyramidSize}px solid`,
-            borderBottomColor: `hsl(var(--${color === 'primary' ? 'primary' : color === 'accent' ? 'accent' : `gnexus-${color}`}) / 0.4)`,
+            borderBottom: `${pyramidSize}px solid ${colors.face2}`,
             left: 0,
             bottom: 0,
             transformOrigin: "bottom center",
@@ -166,17 +149,13 @@ export function FloatingPyramid({
         
         {/* Left face */}
         <div
-          className={cn(
-            "absolute border backdrop-blur-sm",
-            colors.border
-          )}
+          className={cn("absolute border backdrop-blur-sm", colors.border)}
           style={{
             width: 0,
             height: 0,
             borderLeft: `${pyramidSize / 2}px solid transparent`,
             borderRight: `${pyramidSize / 2}px solid transparent`,
-            borderBottom: `${pyramidSize}px solid`,
-            borderBottomColor: `hsl(var(--${color === 'primary' ? 'primary' : color === 'accent' ? 'accent' : `gnexus-${color}`}) / 0.35)`,
+            borderBottom: `${pyramidSize}px solid ${colors.face3}`,
             left: 0,
             bottom: 0,
             transformOrigin: "bottom center",
@@ -186,17 +165,13 @@ export function FloatingPyramid({
         
         {/* Right face */}
         <div
-          className={cn(
-            "absolute border backdrop-blur-sm",
-            colors.border
-          )}
+          className={cn("absolute border backdrop-blur-sm", colors.border)}
           style={{
             width: 0,
             height: 0,
             borderLeft: `${pyramidSize / 2}px solid transparent`,
             borderRight: `${pyramidSize / 2}px solid transparent`,
-            borderBottom: `${pyramidSize}px solid`,
-            borderBottomColor: `hsl(var(--${color === 'primary' ? 'primary' : color === 'accent' ? 'accent' : `gnexus-${color}`}) / 0.45)`,
+            borderBottom: `${pyramidSize}px solid ${colors.face4}`,
             left: 0,
             bottom: 0,
             transformOrigin: "bottom center",

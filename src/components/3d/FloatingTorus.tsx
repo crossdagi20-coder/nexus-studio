@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 
 interface FloatingTorusProps {
   size?: "sm" | "md" | "lg" | "xl";
-  color?: "primary" | "accent" | "coral" | "gold" | "purple";
+  color?: "primary" | "secondary" | "highlight";
   className?: string;
   rotateSpeed?: "slow" | "medium" | "fast";
   floatIntensity?: number;
@@ -17,12 +17,20 @@ const sizeMap = {
   xl: { outer: 160, inner: 80, thickness: 32 },
 };
 
-const colorMap = {
-  primary: "hsl(var(--primary))",
-  accent: "hsl(var(--accent))",
-  coral: "hsl(var(--gnexus-coral))",
-  gold: "hsl(var(--gnexus-gold))",
-  purple: "hsl(var(--gnexus-purple))",
+// Unified luxury 3D color system
+const colorConfig = {
+  primary: {
+    hsl: "250, 90%, 65%",
+    glow: "0 0 30px hsl(250 90% 65% / 0.4)",
+  },
+  secondary: {
+    hsl: "185, 95%, 55%",
+    glow: "0 0 30px hsl(185 95% 55% / 0.4)",
+  },
+  highlight: {
+    hsl: "220, 70%, 55%",
+    glow: "0 0 30px hsl(220 70% 55% / 0.4)",
+  },
 };
 
 const speedMap = {
@@ -43,7 +51,8 @@ export function FloatingTorus({
   const parallaxY = useTransform(scrollYProgress, [0, 1], [0, parallax ? 80 : 0]);
   
   const dimensions = sizeMap[size];
-  const ringColor = colorMap[color];
+  const colors = colorConfig[color];
+  const ringColor = `hsl(${colors.hsl})`;
 
   // Create multiple rings to simulate torus
   const ringCount = 12;
@@ -57,6 +66,7 @@ export function FloatingTorus({
         perspective: "1000px",
         width: dimensions.outer,
         height: dimensions.outer,
+        filter: `drop-shadow(${colors.glow})`,
       }}
       animate={{
         y: [0, -floatIntensity, 0],
@@ -96,10 +106,10 @@ export function FloatingTorus({
                 marginLeft: -dimensions.inner / 2,
                 marginTop: -dimensions.inner / 2,
                 borderColor: ringColor,
-                opacity: 0.6,
+                opacity: 0.7,
                 transform: `rotateY(${angle}deg) translateZ(${dimensions.outer / 4}px)`,
-                boxShadow: `0 0 10px ${ringColor}40, inset 0 0 8px ${ringColor}20`,
-                background: `linear-gradient(135deg, ${ringColor}20, transparent)`,
+                boxShadow: `0 0 15px ${ringColor}50, inset 0 0 10px ${ringColor}30`,
+                background: `linear-gradient(135deg, ${ringColor}25, transparent)`,
               }}
             />
           );

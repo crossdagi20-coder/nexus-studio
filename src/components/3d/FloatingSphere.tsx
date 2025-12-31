@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 
 interface FloatingSphereProps {
   size?: "sm" | "md" | "lg" | "xl";
-  color?: "primary" | "accent" | "coral" | "gold" | "purple";
+  color?: "primary" | "secondary" | "highlight";
   className?: string;
   floatIntensity?: number;
   parallax?: boolean;
@@ -17,31 +17,22 @@ const sizeMap = {
   xl: "w-32 h-32",
 };
 
-const colorMap = {
+// Unified luxury 3D color system
+const colorConfig = {
   primary: {
-    bg: "from-primary/80 via-primary/50 to-primary/20",
-    glow: "shadow-[0_0_40px_hsl(var(--primary)/0.4)]",
-    highlight: "from-white/30 to-transparent",
+    bg: "from-[hsl(250,90%,70%)] via-[hsl(250,85%,55%)] to-[hsl(250,80%,35%)]",
+    glow: "shadow-[0_0_50px_hsl(250_90%_65%/0.5)]",
+    highlight: "from-white/35 to-transparent",
   },
-  accent: {
-    bg: "from-accent/80 via-accent/50 to-accent/20",
-    glow: "shadow-[0_0_40px_hsl(var(--accent)/0.4)]",
-    highlight: "from-white/30 to-transparent",
+  secondary: {
+    bg: "from-[hsl(185,95%,60%)] via-[hsl(185,90%,50%)] to-[hsl(185,85%,35%)]",
+    glow: "shadow-[0_0_50px_hsl(185_95%_55%/0.5)]",
+    highlight: "from-white/35 to-transparent",
   },
-  coral: {
-    bg: "from-gnexus-coral/80 via-gnexus-coral/50 to-gnexus-coral/20",
-    glow: "shadow-[0_0_40px_hsl(var(--gnexus-coral)/0.4)]",
-    highlight: "from-white/30 to-transparent",
-  },
-  gold: {
-    bg: "from-gnexus-gold/80 via-gnexus-gold/50 to-gnexus-gold/20",
-    glow: "shadow-[0_0_40px_hsl(var(--gnexus-gold)/0.4)]",
-    highlight: "from-white/30 to-transparent",
-  },
-  purple: {
-    bg: "from-gnexus-purple/80 via-gnexus-purple/50 to-gnexus-purple/20",
-    glow: "shadow-[0_0_40px_hsl(var(--gnexus-purple)/0.4)]",
-    highlight: "from-white/30 to-transparent",
+  highlight: {
+    bg: "from-[hsl(220,70%,60%)] via-[hsl(220,65%,50%)] to-[hsl(220,60%,35%)]",
+    glow: "shadow-[0_0_50px_hsl(220_70%_55%/0.5)]",
+    highlight: "from-white/35 to-transparent",
   },
 };
 
@@ -56,7 +47,7 @@ export function FloatingSphere({
   const { scrollYProgress } = useScroll();
   const parallaxY = useTransform(scrollYProgress, [0, 1], [0, parallax ? 50 : 0]);
   
-  const colors = colorMap[color];
+  const colors = colorConfig[color];
 
   return (
     <motion.div
@@ -64,7 +55,7 @@ export function FloatingSphere({
       style={{ y: parallaxY }}
       animate={{
         y: [0, -floatIntensity, 0],
-        scale: pulse ? [1, 1.05, 1] : 1,
+        scale: pulse ? [1, 1.08, 1] : 1,
       }}
       transition={{
         duration: 4,
@@ -87,11 +78,11 @@ export function FloatingSphere({
             colors.highlight
           )}
         />
-        {/* Inner shadow */}
+        {/* Inner shadow for depth */}
         <div 
           className="absolute inset-0 rounded-full"
           style={{
-            boxShadow: "inset -4px -4px 12px rgba(0,0,0,0.3), inset 2px 2px 8px rgba(255,255,255,0.1)",
+            boxShadow: "inset -5px -5px 15px rgba(0,0,0,0.4), inset 3px 3px 10px rgba(255,255,255,0.15)",
           }}
         />
       </div>

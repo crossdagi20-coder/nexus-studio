@@ -35,6 +35,7 @@ export function FloatingBuilding({
         perspective: "1000px",
         width: dimensions.width + dimensions.depth,
         height: dimensions.height + 20,
+        filter: "drop-shadow(0 0 40px hsl(250 90% 65% / 0.3))",
       }}
       animate={{
         y: [0, -floatIntensity, 0],
@@ -62,13 +63,13 @@ export function FloatingBuilding({
       >
         {/* Front face */}
         <div
-          className="absolute border border-primary/30 rounded-sm overflow-hidden"
+          className="absolute border border-[hsl(250,90%,65%)/0.4] rounded-sm overflow-hidden"
           style={{
             width: dimensions.width,
             height: dimensions.height,
-            background: "linear-gradient(180deg, hsl(var(--secondary)), hsl(var(--card)))",
+            background: "linear-gradient(180deg, hsl(222, 40%, 10%), hsl(222, 45%, 6%))",
             transform: `translateZ(${dimensions.depth / 2}px)`,
-            boxShadow: "inset 2px 2px 10px rgba(255,255,255,0.05), 0 0 30px rgba(0,0,0,0.3)",
+            boxShadow: "inset 2px 2px 15px rgba(255,255,255,0.05), 0 0 40px rgba(0,0,0,0.4)",
           }}
         >
           {/* Windows grid */}
@@ -83,9 +84,9 @@ export function FloatingBuilding({
             {Array.from({ length: windowRows * windowCols }).map((_, i) => (
               <div 
                 key={i} 
-                className="bg-primary/30 rounded-sm"
+                className="bg-[hsl(250,90%,65%)/0.35] rounded-sm"
                 style={{
-                  boxShadow: "inset 0 0 4px hsl(var(--primary) / 0.3), 0 0 8px hsl(var(--primary) / 0.2)",
+                  boxShadow: "inset 0 0 5px hsl(250 90% 65% / 0.4), 0 0 10px hsl(250 90% 65% / 0.25)",
                 }}
               />
             ))}
@@ -94,14 +95,14 @@ export function FloatingBuilding({
 
         {/* Right face */}
         <div
-          className="absolute border border-primary/20 rounded-sm overflow-hidden"
+          className="absolute border border-[hsl(185,95%,55%)/0.3] rounded-sm overflow-hidden"
           style={{
             width: dimensions.depth,
             height: dimensions.height,
-            background: "linear-gradient(180deg, hsl(var(--muted)), hsl(var(--secondary)))",
+            background: "linear-gradient(180deg, hsl(222, 35%, 8%), hsl(222, 40%, 5%))",
             transform: `translateX(${dimensions.width}px) rotateY(90deg)`,
             transformOrigin: "left center",
-            boxShadow: "inset -4px 2px 15px rgba(0,0,0,0.2)",
+            boxShadow: "inset -4px 2px 20px rgba(0,0,0,0.3)",
           }}
         >
           {/* Side windows */}
@@ -116,7 +117,7 @@ export function FloatingBuilding({
             {Array.from({ length: windowRows * 2 }).map((_, i) => (
               <div 
                 key={i} 
-                className="bg-accent/20 rounded-sm"
+                className="bg-[hsl(185,95%,55%)/0.25] rounded-sm"
               />
             ))}
           </div>
@@ -124,27 +125,27 @@ export function FloatingBuilding({
 
         {/* Top face (roof) */}
         <div
-          className="absolute border border-primary/20 rounded-sm"
+          className="absolute border border-[hsl(220,70%,55%)/0.3] rounded-sm"
           style={{
             width: dimensions.width,
             height: dimensions.depth,
-            background: "linear-gradient(135deg, hsl(var(--primary) / 0.3), hsl(var(--accent) / 0.2))",
+            background: "linear-gradient(135deg, hsl(250, 90%, 65% / 0.35), hsl(185, 95%, 55% / 0.25))",
             transform: `translateY(-${dimensions.depth / 2}px) rotateX(90deg) translateZ(${dimensions.depth / 2}px)`,
-            boxShadow: "inset 0 0 20px rgba(255,255,255,0.1)",
+            boxShadow: "inset 0 0 25px rgba(255,255,255,0.15)",
           }}
         />
 
         {/* Shadow */}
         <div
-          className="absolute rounded-full opacity-30"
+          className="absolute rounded-full opacity-40"
           style={{
             width: dimensions.width * 1.2,
             height: dimensions.depth * 0.8,
             bottom: -20,
             left: -10,
-            background: "radial-gradient(ellipse, hsl(var(--primary) / 0.3), transparent 70%)",
+            background: "radial-gradient(ellipse, hsl(250 90% 65% / 0.35), transparent 70%)",
             transform: "rotateX(90deg)",
-            filter: "blur(10px)",
+            filter: "blur(12px)",
           }}
         />
       </motion.div>
