@@ -13,6 +13,7 @@ import {
   ArrowRight
 } from "lucide-react";
 import { ScrollReveal, ParallaxElement, StaggerContainer, StaggerItem, ScrollProgress } from "@/components/animations";
+import { FloatingCube, FloatingSphere, FloatingPyramid, FloatingTorus, FloatingOctahedron } from "@/components/3d";
 
 const benefits = [
   { icon: Heart, title: "Health Insurance", description: "Comprehensive medical, dental, and vision coverage" },
@@ -64,6 +65,22 @@ export default function Careers() {
         <div className="absolute inset-0 grid-pattern opacity-30" />
         <ParallaxElement yOffset={[0, 100]} className="absolute bottom-20 right-20 w-96 h-96 bg-accent/20 rounded-full blur-[120px] pointer-events-none" />
         
+        {/* Floating 3D shapes */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-[15%] right-[10%]">
+            <FloatingCube size="lg" color="accent" rotateSpeed="slow" />
+          </div>
+          <div className="absolute top-[50%] right-[5%]">
+            <FloatingSphere size="md" color="primary" />
+          </div>
+          <div className="absolute bottom-[20%] right-[15%]">
+            <FloatingPyramid size="sm" color="gold" rotateSpeed="medium" />
+          </div>
+          <div className="absolute bottom-[40%] left-[5%]">
+            <FloatingTorus size="md" color="coral" rotateSpeed="slow" />
+          </div>
+        </div>
+        
         <div className="container mx-auto px-6 relative">
           <ScrollReveal variant="fadeUp" className="max-w-3xl">
             <h1 className="font-serif text-5xl md:text-7xl font-bold mb-6">
@@ -83,6 +100,16 @@ export default function Careers() {
       {/* Benefits */}
       <section className="py-24 bg-secondary/30 relative overflow-hidden">
         <ParallaxElement yOffset={[-30, 30]} className="absolute top-0 left-0 w-80 h-80 bg-primary/5 rounded-full blur-[100px] pointer-events-none" />
+        
+        {/* Floating shapes */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-[10%] right-[5%]">
+            <FloatingOctahedron size="md" color="accent" rotateSpeed="slow" />
+          </div>
+          <div className="absolute bottom-[10%] left-[5%]">
+            <FloatingSphere size="sm" color="primary" />
+          </div>
+        </div>
         
         <div className="container mx-auto px-6 relative">
           <ScrollReveal variant="fadeUp" className="text-center mb-16">
@@ -112,7 +139,16 @@ export default function Careers() {
       </section>
 
       {/* Open Positions */}
-      <section id="openings" className="py-24">
+      <section id="openings" className="py-24 relative overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-[20%] left-[3%]">
+            <FloatingCube size="sm" color="primary" rotateSpeed="slow" />
+          </div>
+          <div className="absolute bottom-[20%] right-[3%]">
+            <FloatingPyramid size="md" color="gold" rotateSpeed="medium" />
+          </div>
+        </div>
+        
         <div className="container mx-auto px-6">
           <ScrollReveal variant="fadeUp" className="text-center mb-16">
             <h2 className="font-serif text-4xl md:text-5xl font-bold mb-4">
@@ -158,7 +194,16 @@ export default function Careers() {
       </section>
 
       {/* CTA */}
-      <section className="py-24 bg-secondary/30">
+      <section className="py-24 bg-secondary/30 relative overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-[20%] left-[10%]">
+            <FloatingTorus size="lg" color="primary" rotateSpeed="slow" />
+          </div>
+          <div className="absolute bottom-[20%] right-[10%]">
+            <FloatingSphere size="md" color="accent" />
+          </div>
+        </div>
+        
         <div className="container mx-auto px-6">
           <ScrollReveal variant="scaleUp" className="text-center max-w-3xl mx-auto">
             <h2 className="font-serif text-4xl md:text-5xl font-bold mb-6">

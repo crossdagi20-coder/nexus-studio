@@ -13,6 +13,7 @@ import {
   Palette
 } from "lucide-react";
 import { ScrollReveal, ParallaxElement, StaggerContainer, StaggerItem, ScrollProgress } from "@/components/animations";
+import { FloatingCube, FloatingTorus, FloatingPyramid, FloatingSphere, FloatingOctahedron } from "@/components/3d";
 
 const values = [
   {
@@ -61,6 +62,22 @@ export default function About() {
         <div className="absolute inset-0 grid-pattern opacity-30" />
         <ParallaxElement yOffset={[0, 100]} className="absolute top-20 right-20 w-96 h-96 bg-primary/20 rounded-full blur-[120px] pointer-events-none" />
         
+        {/* Floating 3D shapes */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-[15%] right-[10%]">
+            <FloatingCube size="lg" color="primary" rotateSpeed="slow" />
+          </div>
+          <div className="absolute top-[45%] right-[5%]">
+            <FloatingSphere size="md" color="accent" />
+          </div>
+          <div className="absolute bottom-[20%] right-[15%]">
+            <FloatingOctahedron size="sm" color="coral" rotateSpeed="medium" />
+          </div>
+          <div className="absolute bottom-[30%] left-[5%]">
+            <FloatingPyramid size="md" color="gold" rotateSpeed="slow" />
+          </div>
+        </div>
+        
         <div className="container mx-auto px-6 relative">
           <ScrollReveal variant="fadeUp">
             <div className="max-w-3xl">
@@ -78,7 +95,14 @@ export default function About() {
       </section>
 
       {/* Stats */}
-      <section className="py-16 bg-secondary/30">
+      <section className="py-16 bg-secondary/30 relative overflow-hidden">
+        <div className="absolute top-[50%] left-[3%] -translate-y-1/2 pointer-events-none">
+          <FloatingSphere size="sm" color="primary" />
+        </div>
+        <div className="absolute top-[50%] right-[3%] -translate-y-1/2 pointer-events-none">
+          <FloatingSphere size="sm" color="accent" />
+        </div>
+        
         <div className="container mx-auto px-6">
           <StaggerContainer className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {stats.map((stat) => (
@@ -94,7 +118,16 @@ export default function About() {
       </section>
 
       {/* Story */}
-      <section className="py-24">
+      <section className="py-24 relative overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-[20%] right-[5%]">
+            <FloatingCube size="md" color="primary" rotateSpeed="slow" />
+          </div>
+          <div className="absolute bottom-[20%] right-[10%]">
+            <FloatingPyramid size="sm" color="gold" rotateSpeed="medium" />
+          </div>
+        </div>
+        
         <div className="container mx-auto px-6">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <ScrollReveal variant="slideLeft">
@@ -138,6 +171,16 @@ export default function About() {
       <section className="py-24 bg-secondary/30 relative overflow-hidden">
         <ParallaxElement yOffset={[-50, 50]} className="absolute -bottom-20 -left-20 w-80 h-80 bg-accent/10 rounded-full blur-[100px] pointer-events-none" />
         
+        {/* Floating shapes */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-[10%] right-[8%]">
+            <FloatingTorus size="lg" color="primary" rotateSpeed="slow" />
+          </div>
+          <div className="absolute bottom-[15%] left-[5%]">
+            <FloatingSphere size="md" color="accent" />
+          </div>
+        </div>
+        
         <div className="container mx-auto px-6 relative">
           <ScrollReveal variant="fadeUp" className="text-center mb-16">
             <h2 className="font-serif text-4xl md:text-5xl font-bold mb-4">
@@ -165,7 +208,22 @@ export default function About() {
       </section>
 
       {/* Team */}
-      <section className="py-24">
+      <section className="py-24 relative overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-[10%] left-[5%]">
+            <FloatingCube size="sm" color="primary" rotateSpeed="slow" />
+          </div>
+          <div className="absolute top-[10%] right-[5%]">
+            <FloatingCube size="sm" color="accent" rotateSpeed="medium" />
+          </div>
+          <div className="absolute bottom-[10%] left-[8%]">
+            <FloatingSphere size="sm" color="coral" />
+          </div>
+          <div className="absolute bottom-[10%] right-[8%]">
+            <FloatingSphere size="sm" color="gold" />
+          </div>
+        </div>
+        
         <div className="container mx-auto px-6">
           <ScrollReveal variant="fadeUp" className="text-center mb-16">
             <h2 className="font-serif text-4xl md:text-5xl font-bold mb-4">
@@ -202,7 +260,16 @@ export default function About() {
       </section>
 
       {/* CTA */}
-      <section className="py-24 bg-secondary/30">
+      <section className="py-24 bg-secondary/30 relative overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-[20%] left-[10%]">
+            <FloatingPyramid size="lg" color="primary" rotateSpeed="slow" />
+          </div>
+          <div className="absolute bottom-[20%] right-[10%]">
+            <FloatingSphere size="md" color="accent" />
+          </div>
+        </div>
+        
         <div className="container mx-auto px-6">
           <ScrollReveal variant="scaleUp" className="text-center max-w-3xl mx-auto">
             <h2 className="font-serif text-4xl md:text-5xl font-bold mb-6">

@@ -16,6 +16,7 @@ import {
   StaggerContainer, 
   StaggerItem 
 } from "@/components/animations";
+import { FloatingCube, FloatingTorus, FloatingPyramid, FloatingSphere, FloatingOctahedron, FloatingLaptop, FloatingBuilding } from "@/components/3d";
 
 const services = [
   {
@@ -54,7 +55,7 @@ export default function Services() {
       <ScrollProgress />
       
       {/* Hero */}
-      <section className="relative min-h-[50vh] flex items-center">
+      <section className="relative min-h-[50vh] flex items-center overflow-hidden">
         <div className="absolute inset-0 grid-pattern opacity-30" />
         <ParallaxElement yOffset={[0, 100]} className="absolute top-20 right-20 w-96 h-96">
           <div className="w-full h-full bg-primary/20 rounded-full blur-[120px]" />
@@ -62,6 +63,22 @@ export default function Services() {
         <ParallaxElement yOffset={[0, -80]} className="absolute bottom-20 left-20 w-96 h-96">
           <div className="w-full h-full bg-accent/20 rounded-full blur-[120px]" />
         </ParallaxElement>
+        
+        {/* Floating 3D shapes */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-[15%] right-[10%]">
+            <FloatingCube size="lg" color="primary" rotateSpeed="slow" />
+          </div>
+          <div className="absolute top-[40%] right-[5%]">
+            <FloatingPyramid size="md" color="gold" rotateSpeed="medium" />
+          </div>
+          <div className="absolute bottom-[20%] right-[15%]">
+            <FloatingTorus size="sm" color="accent" rotateSpeed="slow" />
+          </div>
+          <div className="absolute bottom-[30%] left-[5%]">
+            <FloatingSphere size="md" color="coral" />
+          </div>
+        </div>
         
         <div className="container mx-auto px-6 relative">
           <div className="text-center max-w-3xl mx-auto">
@@ -81,13 +98,22 @@ export default function Services() {
       </section>
 
       {/* Services Grid */}
-      <section className="py-24">
+      <section className="py-24 relative overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-[10%] left-[-2%]">
+            <FloatingBuilding size="lg" />
+          </div>
+          <div className="absolute bottom-[10%] right-[3%]">
+            <FloatingLaptop size="md" />
+          </div>
+        </div>
+        
         <div className="container mx-auto px-6">
           <StaggerContainer className="grid md:grid-cols-2 gap-8">
             {services.map((service) => (
               <StaggerItem key={service.title} variant="fadeUp">
                 <Link to={service.href} className="block h-full">
-                  <div className="glass-card p-8 h-full group hover:border-primary/30 transition-all duration-300 cursor-pointer">
+                  <div className="glass-card p-8 h-full group hover:border-primary/30 transition-all duration-300 cursor-pointer relative overflow-hidden">
                     <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${service.color} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300`}>
                       <service.icon className="w-8 h-8 text-white" />
                     </div>
@@ -109,7 +135,19 @@ export default function Services() {
       </section>
 
       {/* CTA */}
-      <section className="py-24 bg-secondary/30">
+      <section className="py-24 bg-secondary/30 relative overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-[20%] left-[10%]">
+            <FloatingTorus size="lg" color="primary" rotateSpeed="slow" />
+          </div>
+          <div className="absolute bottom-[20%] right-[10%]">
+            <FloatingSphere size="md" color="accent" />
+          </div>
+          <div className="absolute top-[50%] right-[5%]">
+            <FloatingOctahedron size="sm" color="coral" rotateSpeed="medium" />
+          </div>
+        </div>
+        
         <div className="container mx-auto px-6">
           <ScrollReveal variant="scaleUp" className="text-center max-w-3xl mx-auto">
             <h2 className="font-serif text-4xl md:text-5xl font-bold mb-6">

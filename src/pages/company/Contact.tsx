@@ -9,6 +9,7 @@ import {
   Clock
 } from "lucide-react";
 import { ScrollReveal, ParallaxElement, StaggerContainer, StaggerItem, ScrollProgress } from "@/components/animations";
+import { FloatingTorus, FloatingSphere, FloatingCube, FloatingOctahedron } from "@/components/3d";
 
 export default function Contact() {
   return (
@@ -19,6 +20,22 @@ export default function Contact() {
       <section className="relative min-h-[50vh] flex items-center overflow-hidden">
         <div className="absolute inset-0 grid-pattern opacity-30" />
         <ParallaxElement yOffset={[0, 80]} className="absolute top-20 right-20 w-96 h-96 bg-primary/20 rounded-full blur-[120px] pointer-events-none" />
+        
+        {/* Floating 3D shapes */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-[15%] right-[10%]">
+            <FloatingTorus size="lg" color="primary" rotateSpeed="slow" />
+          </div>
+          <div className="absolute top-[50%] right-[5%]">
+            <FloatingSphere size="md" color="accent" />
+          </div>
+          <div className="absolute bottom-[25%] right-[15%]">
+            <FloatingCube size="sm" color="coral" rotateSpeed="medium" />
+          </div>
+          <div className="absolute bottom-[40%] left-[5%]">
+            <FloatingOctahedron size="md" color="gold" rotateSpeed="slow" />
+          </div>
+        </div>
         
         <div className="container mx-auto px-6 relative">
           <ScrollReveal variant="fadeUp" className="text-center max-w-3xl mx-auto">
@@ -34,12 +51,24 @@ export default function Contact() {
       </section>
 
       {/* Contact Section */}
-      <section className="py-24">
+      <section className="py-24 relative overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-[30%] left-[3%]">
+            <FloatingSphere size="sm" color="primary" />
+          </div>
+          <div className="absolute bottom-[20%] right-[3%]">
+            <FloatingTorus size="md" color="accent" rotateSpeed="slow" />
+          </div>
+        </div>
+        
         <div className="container mx-auto px-6">
           <div className="grid lg:grid-cols-2 gap-16">
             {/* Contact Form */}
             <ScrollReveal variant="slideLeft">
-              <div className="glass-card p-8">
+              <div className="glass-card p-8 relative">
+                <div className="absolute -top-4 -right-4 pointer-events-none">
+                  <FloatingCube size="sm" color="primary" rotateSpeed="medium" />
+                </div>
                 <h2 className="font-serif text-3xl font-bold mb-6">Send Us a Message</h2>
                 <form className="space-y-6">
                   <StaggerContainer className="grid md:grid-cols-2 gap-4" staggerDelay={0.05}>

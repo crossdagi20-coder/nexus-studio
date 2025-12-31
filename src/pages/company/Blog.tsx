@@ -9,6 +9,7 @@ import {
   Tag
 } from "lucide-react";
 import { ScrollReveal, ParallaxElement, StaggerContainer, StaggerItem, ScrollProgress } from "@/components/animations";
+import { FloatingCube, FloatingSphere, FloatingPyramid, FloatingTorus } from "@/components/3d";
 
 const categories = ["All", "Design", "Development", "Business", "Industry News"];
 
@@ -73,6 +74,19 @@ export default function Blog() {
         <div className="absolute inset-0 grid-pattern opacity-30" />
         <ParallaxElement yOffset={[0, 80]} className="absolute top-20 left-20 w-96 h-96 bg-primary/20 rounded-full blur-[120px] pointer-events-none" />
         
+        {/* Floating 3D shapes */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-[20%] right-[10%]">
+            <FloatingCube size="md" color="primary" rotateSpeed="slow" />
+          </div>
+          <div className="absolute bottom-[30%] right-[5%]">
+            <FloatingSphere size="sm" color="accent" />
+          </div>
+          <div className="absolute bottom-[40%] left-[5%]">
+            <FloatingPyramid size="sm" color="gold" rotateSpeed="medium" />
+          </div>
+        </div>
+        
         <div className="container mx-auto px-6 relative">
           <ScrollReveal variant="fadeUp" className="text-center max-w-3xl mx-auto">
             <h1 className="font-serif text-5xl md:text-7xl font-bold mb-6">
@@ -86,7 +100,7 @@ export default function Blog() {
       </section>
 
       {/* Filter */}
-      <section className="py-8">
+      <section className="py-8 relative">
         <div className="container mx-auto px-6">
           <StaggerContainer className="flex flex-wrap justify-center gap-3" staggerDelay={0.04}>
             {categories.map((category, index) => (
@@ -109,7 +123,16 @@ export default function Blog() {
       </section>
 
       {/* Posts Grid */}
-      <section className="py-16">
+      <section className="py-16 relative overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-[30%] left-[3%]">
+            <FloatingSphere size="sm" color="primary" />
+          </div>
+          <div className="absolute bottom-[20%] right-[3%]">
+            <FloatingTorus size="md" color="accent" rotateSpeed="slow" />
+          </div>
+        </div>
+        
         <div className="container mx-auto px-6">
           <StaggerContainer className="grid md:grid-cols-2 lg:grid-cols-3 gap-8" staggerDelay={0.08}>
             {posts.map((post) => (
@@ -160,10 +183,22 @@ export default function Blog() {
       </section>
 
       {/* Newsletter */}
-      <section className="py-24 bg-secondary/30">
+      <section className="py-24 bg-secondary/30 relative overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-[20%] left-[10%]">
+            <FloatingCube size="md" color="primary" rotateSpeed="slow" />
+          </div>
+          <div className="absolute bottom-[20%] right-[10%]">
+            <FloatingSphere size="sm" color="accent" />
+          </div>
+        </div>
+        
         <div className="container mx-auto px-6">
           <ScrollReveal variant="scaleUp">
-            <div className="glass-card p-12 text-center max-w-3xl mx-auto">
+            <div className="glass-card p-12 text-center max-w-3xl mx-auto relative">
+              <div className="absolute -top-6 -right-6 pointer-events-none">
+                <FloatingPyramid size="sm" color="gold" rotateSpeed="medium" />
+              </div>
               <h2 className="font-serif text-4xl font-bold mb-4">Stay Updated</h2>
               <p className="text-xl text-muted-foreground mb-8">
                 Subscribe to our newsletter for the latest insights and updates.

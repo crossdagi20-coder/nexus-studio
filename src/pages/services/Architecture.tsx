@@ -19,6 +19,7 @@ import {
   StaggerContainer, 
   StaggerItem 
 } from "@/components/animations";
+import { FloatingBuilding, FloatingPyramid, FloatingCube, FloatingSphere, FloatingTorus } from "@/components/3d";
 
 const services = [
   {
@@ -56,11 +57,27 @@ export default function Architecture() {
       <ScrollProgress />
       
       {/* Hero */}
-      <section className="relative min-h-[70vh] flex items-center">
+      <section className="relative min-h-[70vh] flex items-center overflow-hidden">
         <div className="absolute inset-0 grid-pattern opacity-30" />
         <ParallaxElement yOffset={[50, -50]} className="absolute top-20 right-20 w-96 h-96">
           <div className="w-full h-full bg-primary/20 rounded-full blur-[120px]" />
         </ParallaxElement>
+        
+        {/* Floating 3D shapes */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-[15%] right-[8%]">
+            <FloatingBuilding size="lg" />
+          </div>
+          <div className="absolute top-[55%] right-[5%]">
+            <FloatingPyramid size="md" color="gold" rotateSpeed="medium" />
+          </div>
+          <div className="absolute bottom-[15%] right-[15%]">
+            <FloatingCube size="sm" color="primary" rotateSpeed="slow" />
+          </div>
+          <div className="absolute bottom-[40%] left-[3%]">
+            <FloatingSphere size="md" color="accent" />
+          </div>
+        </div>
         
         <div className="container mx-auto px-6 relative">
           <div className="max-w-3xl">
@@ -106,7 +123,16 @@ export default function Architecture() {
       </section>
 
       {/* Services Grid */}
-      <section className="py-24 relative">
+      <section className="py-24 relative overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-[10%] left-[3%]">
+            <FloatingCube size="md" color="primary" rotateSpeed="slow" />
+          </div>
+          <div className="absolute bottom-[10%] right-[5%]">
+            <FloatingPyramid size="sm" color="gold" rotateSpeed="medium" />
+          </div>
+        </div>
+        
         <div className="container mx-auto px-6">
           <ScrollReveal variant="fadeUp" className="text-center mb-16">
             <h2 className="font-serif text-4xl md:text-5xl font-bold mb-4">
@@ -136,7 +162,19 @@ export default function Architecture() {
       </section>
 
       {/* Benefits */}
-      <section className="py-24 bg-secondary/30">
+      <section className="py-24 bg-secondary/30 relative overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-[20%] left-[5%]">
+            <FloatingBuilding size="md" />
+          </div>
+          <div className="absolute bottom-[20%] left-[10%]">
+            <FloatingPyramid size="sm" color="gold" rotateSpeed="medium" />
+          </div>
+          <div className="absolute top-[50%] right-[5%]">
+            <FloatingTorus size="md" color="accent" rotateSpeed="slow" />
+          </div>
+        </div>
+        
         <div className="container mx-auto px-6">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <ScrollReveal variant="slideRight">
@@ -162,7 +200,10 @@ export default function Architecture() {
             </ScrollReveal>
 
             <ScrollReveal variant="slideLeft">
-              <div className="glass-card p-8 text-center">
+              <div className="glass-card p-8 text-center relative">
+                <div className="absolute -top-6 -right-6 pointer-events-none">
+                  <FloatingCube size="sm" color="primary" rotateSpeed="medium" />
+                </div>
                 <Sparkles className="w-16 h-16 text-primary mx-auto mb-6" />
                 <h3 className="font-serif text-3xl font-bold mb-4">Ready to Start?</h3>
                 <p className="text-muted-foreground mb-6">

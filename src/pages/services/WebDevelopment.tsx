@@ -19,6 +19,7 @@ import {
   StaggerContainer, 
   StaggerItem 
 } from "@/components/animations";
+import { FloatingLaptop, FloatingCube, FloatingSphere, FloatingTorus, FloatingOctahedron } from "@/components/3d";
 
 const services = [
   {
@@ -53,11 +54,27 @@ export default function WebDevelopment() {
       <ScrollProgress />
       
       {/* Hero */}
-      <section className="relative min-h-[70vh] flex items-center">
+      <section className="relative min-h-[70vh] flex items-center overflow-hidden">
         <div className="absolute inset-0 grid-pattern opacity-30" />
         <ParallaxElement yOffset={[30, -60]} className="absolute top-20 left-20 w-96 h-96">
           <div className="w-full h-full bg-accent/20 rounded-full blur-[120px]" />
         </ParallaxElement>
+        
+        {/* Floating 3D shapes */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-[15%] right-[8%]">
+            <FloatingLaptop size="lg" />
+          </div>
+          <div className="absolute top-[55%] right-[5%]">
+            <FloatingCube size="md" color="accent" rotateSpeed="medium" />
+          </div>
+          <div className="absolute bottom-[15%] right-[15%]">
+            <FloatingSphere size="sm" color="primary" />
+          </div>
+          <div className="absolute bottom-[40%] left-[3%]">
+            <FloatingOctahedron size="md" color="coral" rotateSpeed="slow" />
+          </div>
+        </div>
         
         <div className="container mx-auto px-6 relative">
           <div className="max-w-3xl">
@@ -103,7 +120,16 @@ export default function WebDevelopment() {
       </section>
 
       {/* Services Grid */}
-      <section className="py-24 relative">
+      <section className="py-24 relative overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-[10%] left-[3%]">
+            <FloatingCube size="md" color="accent" rotateSpeed="slow" />
+          </div>
+          <div className="absolute bottom-[10%] right-[5%]">
+            <FloatingSphere size="sm" color="primary" />
+          </div>
+        </div>
+        
         <div className="container mx-auto px-6">
           <ScrollReveal variant="fadeUp" className="text-center mb-16">
             <h2 className="font-serif text-4xl md:text-5xl font-bold mb-4">
@@ -131,7 +157,16 @@ export default function WebDevelopment() {
       </section>
 
       {/* Tech Stack */}
-      <ParallaxSection offset={0.1} className="py-24 bg-secondary/30">
+      <ParallaxSection offset={0.1} className="py-24 bg-secondary/30 relative overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-[20%] right-[5%]">
+            <FloatingTorus size="md" color="accent" rotateSpeed="slow" />
+          </div>
+          <div className="absolute bottom-[20%] left-[5%]">
+            <FloatingSphere size="sm" color="primary" />
+          </div>
+        </div>
+        
         <div className="container mx-auto px-6">
           <ScrollReveal variant="fadeUp" className="text-center mb-12">
             <h2 className="font-serif text-4xl font-bold mb-4">Our Tech Stack</h2>
@@ -151,10 +186,22 @@ export default function WebDevelopment() {
       </ParallaxSection>
 
       {/* CTA */}
-      <section className="py-24">
+      <section className="py-24 relative overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-[20%] left-[10%]">
+            <FloatingLaptop size="md" />
+          </div>
+          <div className="absolute bottom-[20%] right-[10%]">
+            <FloatingTorus size="lg" color="accent" rotateSpeed="medium" />
+          </div>
+        </div>
+        
         <div className="container mx-auto px-6">
           <ScrollReveal variant="scaleUp" className="max-w-3xl mx-auto">
-            <div className="glass-card p-12 text-center">
+            <div className="glass-card p-12 text-center relative">
+              <div className="absolute -top-6 -right-6 pointer-events-none">
+                <FloatingCube size="sm" color="accent" rotateSpeed="medium" />
+              </div>
               <Palette className="w-16 h-16 text-primary mx-auto mb-6" />
               <h2 className="font-serif text-4xl font-bold mb-4">Let's Build Something Amazing</h2>
               <p className="text-xl text-muted-foreground mb-8">
